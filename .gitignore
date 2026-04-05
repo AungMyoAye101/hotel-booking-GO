@@ -1,0 +1,41 @@
+# Binaries for programs and plugins
+go-server/*.exe
+go-server/*.exe~
+go-server/*.dll
+go-server/*.so
+go-server/*.dylib
+
+# Test binaries, profiling, and coverage reports
+go-server/*.test
+go-server/*.out
+go-server/*.prof
+go-server/*.cgo1.go
+go-server/*.cgo2.c
+go-server/_cgo_defun.c
+go-server/_cgo_gotypes.go
+go-server/_cgo_export.*
+
+# Compiled Object files, Static and Dynamic libs
+go-server/*.o
+go-server/*.a
+
+# Folders
+go-server/_obj
+go-server/_test
+go-server/bin/
+go-server/.cache
+
+# Environment files
+go-server/.env
+
+# Go workspace file
+go-server/go.work
+go-server/go.work.sum
+
+# IDEs, Editors, and OS files (Leave these global so they work everywhere)
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

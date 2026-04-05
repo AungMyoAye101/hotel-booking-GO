@@ -1,20 +1,17 @@
 package db
 
 import (
-	"fmt"
-	"log"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func Connect(url string) *gorm.DB {
+func Connect(url string) (*gorm.DB, error) {
 
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 
 	if err != nil {
-		log.Fatal("Failed to connect database ", err)
+		return nil, err
 	}
-	fmt.Println("database connected.")
-	return db
+	db.AutoMigrate()
+	return db, nil
 }

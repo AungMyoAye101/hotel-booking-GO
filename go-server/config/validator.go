@@ -11,22 +11,18 @@ import (
 var validate = validator.New()
 
 func validateConfig(cfg *Config) error {
-	if cfg.DATABASE.Disabled {
-		if cfg.SERVER.PORT == "" {
-			return errors.New("invalid configuration: PORT is required")
-		}
-		return nil
-	}
 
 	err := validate.Struct(struct {
-		DATABASE_URL string `validate:"required"`
-		PORT         string `validate:"required"`
-		// JWTSecret   string `validate:"required,min=10"`
+		DATABASE_URL   string `validate:"required"`
+		PORT           string `validate:"required"`
+		ACCESS_SECRET  string `validate:"required"`
+		REFRESH_SECRET string `validate:"required"`
 	}{
 
-		DATABASE_URL: cfg.DATABASE.URL,
-		PORT:         cfg.SERVER.PORT,
-		// JWTSecret:   cfg.JWTSecret,
+		DATABASE_URL:   cfg.DATABASE.URL,
+		PORT:           cfg.SERVER.PORT,
+		ACCESS_SECRET:  cfg.AUTH.ACCESS_SECRET,
+		REFRESH_SECRET: cfg.AUTH.REFRESH_SECRET,
 	})
 
 	if err != nil {

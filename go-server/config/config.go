@@ -1,14 +1,13 @@
 package config
 
 import (
-	"strconv"
-
 	"github.com/spf13/viper"
 )
 
 type Config struct {
 	SERVER   Server
 	DATABASE Database
+	AUTH     Auth
 }
 type Server struct {
 	HOST string
@@ -20,23 +19,18 @@ type Database struct {
 	Disabled bool
 }
 
+type Auth struct {
+	ACCESS_SECRET  string
+	REFRESH_SECRET string
+}
+
 func New() (*Config, error) {
 
 	viper.SetConfigFile(".env")
 	viper.SetConfigType("env")
 	viper.SetDefault("PORT", 8000)
-	viper.SetDefault("SKIP_DB", false)
 	viper.AutomaticEnv()
 	_ = viper.ReadInConfig()
-
-	// viper.GetBool reads strings like "true"/"false" from env, but when values
-	// come from an .env file, they're read as strings; normalize here.
-	skipDB := viper.GetBool("SKIP_DB")
-	if raw := viper.GetString("SKIP_DB"); raw != "" {
-		if parsed, err := strconv.ParseBool(raw); err == nil {
-			skipDB = parsed
-		}
-	}
 
 	cfg := &Config{
 		SERVER: Server{
@@ -44,8 +38,11 @@ func New() (*Config, error) {
 			PORT: viper.GetString("PORT"),
 		},
 		DATABASE: Database{
-			URL:      viper.GetString("DATABASE_URL"),
-			Disabled: skipDB,
+			URL: viper.GetString("DATABASE_URL"),
+		},
+		AUTH: Auth{
+			ACCESS_SECRET:  viper.GetString("ACCESS_TOKEN_SECRET"),
+			REFRESH_SECRET: viper.GetString("REFRESH_TOKEN_SECRET"),
 		},
 	}
 	if err := validateConfig(cfg); err != nil {

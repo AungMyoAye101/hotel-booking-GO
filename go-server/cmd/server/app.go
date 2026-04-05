@@ -5,34 +5,25 @@ import (
 	"log"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/db"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
+	"github.com/labstack/echo/v4/middleware"
+	echomiddleware "github.com/labstack/echo/v4/middleware"
 )
 
 type APP struct {
 	echo *echo.Echo
 	cfg  *config.Config
-	db   *gorm.DB
 }
 
 func NewApp(cfg *config.Config) *APP {
 	e := echo.New()
 
-	var gormDB *gorm.DB
-	if cfg.DATABASE.Disabled {
-		log.Println("Database connection skipped (SKIP_DB=true)")
-	} else {
-		connectedDB, err := db.Connect(cfg.DATABASE.URL)
-		if err != nil {
-			log.Fatalf("Failed to connect database: %v", err)
-		}
-		gormDB = connectedDB
-	}
+	e.Use(middleware.RequestLogger())
+	e.Use(echomiddleware.Recover())
+
 	app := &APP{
 		echo: e,
 		cfg:  cfg,
-		db:   gormDB,
 	}
 
 	return app

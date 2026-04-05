@@ -13,7 +13,7 @@ type Room struct {
 	MaxPeople  int            `gorm:"type:int;not null" json:"max_people" validate:"required,gt=0"`
 	Price      float64        `gorm:"type:numeric(10,2);not null" json:"price" validate:"required,gt=0"`
 	TotalRooms int            `gorm:"type:int;not null" json:"total_rooms" validate:"required,gte=0"`
-	HotelID    uuid.UUID      `gorm:"type:uuid;not null;index" json:"hotel_id" validate:"required"`
+	HotelID    uuid.UUID      `gorm:"type:uuid;not null;" json:"hotel_id" validate:"required"`
 	PhotoID    *uuid.UUID     `gorm:"type:uuid" json:"photo_id"`
 	BedTypes   string         `gorm:"type:varchar(50);not null" json:"bed_types" validate:"required,oneof=king queen full twin single"`
 	CreatedAt  time.Time      `gorm:"autoCreateTime" json:"created_at"`

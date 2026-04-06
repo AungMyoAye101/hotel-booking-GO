@@ -1,18 +1,27 @@
 package user
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
-type ResponseUser struct {
-	ID        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email" `
-	City      string    `json:"city" `
-	Country   string    `json:"country"`
-	Phone     string    `json:"phone"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+type CreateUserDTO struct {
+	Name     string `json:"name" validate:"required,max=255"`
+	Email    string `json:"email" validate:"required,email,max=255"`
+	Password string `json:"password" validate:"required,min=8"`
+	City     string `json:"city" validate:"omitempty,max=100"`
+	Country  string `json:"country" validate:"omitempty,max=100"`
+	Phone    string `json:"phone" validate:"omitempty,max=20"`
+}
+
+type UpdateUserDTO struct {
+	Name     *string `json:"name" validate:"omitempty,max=255"`
+	Email    *string `json:"email" validate:"omitempty,email,max=255"`
+	Password *string `json:"password" validate:"omitempty,min=8"`
+	City     *string `json:"city" validate:"omitempty,max=100"`
+	Country  *string `json:"country" validate:"omitempty,max=100"`
+	Phone    *string `json:"phone" validate:"omitempty,max=20"`
+}
+
+type UserIDParam struct {
+	ID uuid.UUID `param:"id" validate:"required"`
 }

@@ -1,4 +1,4 @@
-package user
+package payment
 
 import (
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
@@ -7,17 +7,17 @@ import (
 )
 
 func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
+	_ = cfg
 
 	repo := NewRepository(db)
 	service := NewService(repo)
 	handler := NewHandler(service)
 
-	api := e.Group("/api/v1/users")
-
-	api.POST("", handler.CreateUser)
-	api.GET("", handler.GetAllUsers)
-	api.GET("/:id", handler.GetUserByID)
-	api.PUT("/:id", handler.UpdateUser)
-	api.DELETE("/:id", handler.DeleteUser)
-
+	api := e.Group("/api/v1/payments")
+	api.POST("", handler.CreatePayment)
+	api.GET("", handler.GetAllPayments)
+	api.GET("/:id", handler.GetPaymentByID)
+	api.PUT("/:id", handler.UpdatePayment)
+	api.DELETE("/:id", handler.DeletePayment)
 }
+

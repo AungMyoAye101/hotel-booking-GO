@@ -1,10 +1,17 @@
-package main
+﻿package main
 
 import (
 	"log"
 	"net/http"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
+
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/auth"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/booking"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/hotel"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/payment"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/review"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/room"
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/user"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/db"
 	"github.com/labstack/echo/v4"
@@ -24,7 +31,14 @@ func main() {
 	app.echo.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, "Welcome to Hotel Booking System APIs")
 	})
+
+	auth.Run(app.echo, db, cfg)
 	user.Run(app.echo, db, cfg)
+	hotel.Run(app.echo, db, cfg)
+	room.Run(app.echo, db, cfg)
+	booking.Run(app.echo, db, cfg)
+	review.Run(app.echo, db, cfg)
+	payment.Run(app.echo, db, cfg)
 
 	app.Start()
 }

@@ -5,9 +5,11 @@ import (
 	"log"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/logging"
+	appmiddleware "github.com/AungMyoAye101/hotel-booking-GO/pkg/middleware"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/validation"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	echomiddleware "github.com/labstack/echo/v4/middleware"
 )
 
 type APP struct {
@@ -18,8 +20,12 @@ type APP struct {
 func NewApp(cfg *config.Config) *APP {
 	e := echo.New()
 
-	e.Use(middleware.RequestLogger())
-	e.Use(echomiddleware.Recover())
+	e.Validator = validation.New()
+
+	logger := logging.New()
+	e.Use(middleware.RequestID())
+	e.Use(appmiddleware.RequestLogger(logger))
+	e.Use(middleware.Recover())
 
 	app := &APP{
 		echo: e,

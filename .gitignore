@@ -4,6 +4,9 @@ go-server/*.exe~
 go-server/*.dll
 go-server/*.so
 go-server/*.dylib
+go-server/*.gocache
+go-server/tmp
+
 
 # Test binaries, profiling, and coverage reports
 go-server/*.test

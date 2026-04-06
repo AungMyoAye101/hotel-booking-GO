@@ -3,8 +3,8 @@ package user
 import (
 	"net/http"
 
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/pagination"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -31,7 +31,7 @@ func (h *Handler) CreateUser(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusCreated, u)
+	return response.SuccessResponse(c, http.StatusCreated, "user created", u)
 }
 
 func (h *Handler) GetAllUsers(c echo.Context) error {
@@ -46,10 +46,14 @@ func (h *Handler) GetAllUsers(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, pagination.Response[models.User]{
-		Data: users,
-		Meta: pagination.NewMeta(params, total),
-	})
+	return response.SuccessResponseWithMeta(
+		c,
+		http.StatusOK,
+		"users fetched",
+		users,
+		pagination.NewMeta(params, total),
+	)
+
 }
 
 func (h *Handler) GetUserByID(c echo.Context) error {
@@ -65,7 +69,7 @@ func (h *Handler) GetUserByID(c echo.Context) error {
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, u)
+	return response.SuccessResponse(c, http.StatusOK, "user fetched", u)
 }
 
 func (h *Handler) UpdateUser(c echo.Context) error {
@@ -89,7 +93,7 @@ func (h *Handler) UpdateUser(c echo.Context) error {
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, u)
+	return response.SuccessResponse(c, http.StatusOK, "user updated", u)
 }
 
 func (h *Handler) DeleteUser(c echo.Context) error {
@@ -104,5 +108,5 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.NoContent(http.StatusNoContent)
+	return response.SuccessResponse(c, http.StatusOK, "user deleted", nil)
 }

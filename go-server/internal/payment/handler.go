@@ -3,8 +3,8 @@ package payment
 import (
 	"net/http"
 
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/pagination"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -31,7 +31,7 @@ func (h *Handler) CreatePayment(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusCreated, p)
+	return response.SuccessResponse(c, http.StatusCreated, "payment created", p)
 }
 
 func (h *Handler) GetAllPayments(c echo.Context) error {
@@ -46,10 +46,13 @@ func (h *Handler) GetAllPayments(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, pagination.Response[models.Payment]{
-		Data: payments,
-		Meta: pagination.NewMeta(params, total),
-	})
+	return response.SuccessResponseWithMeta(
+		c,
+		http.StatusOK,
+		"payments fetched",
+		payments,
+		pagination.NewMeta(params, total),
+	)
 }
 
 func (h *Handler) GetPaymentByID(c echo.Context) error {
@@ -66,7 +69,7 @@ func (h *Handler) GetPaymentByID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, p)
+	return response.SuccessResponse(c, http.StatusOK, "payment fetched", p)
 }
 
 func (h *Handler) UpdatePayment(c echo.Context) error {
@@ -90,7 +93,7 @@ func (h *Handler) UpdatePayment(c echo.Context) error {
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusOK, p)
+	return response.SuccessResponse(c, http.StatusOK, "payment updated", p)
 }
 
 func (h *Handler) DeletePayment(c echo.Context) error {
@@ -106,6 +109,5 @@ func (h *Handler) DeletePayment(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return response.SuccessResponse(c, http.StatusOK, "payment deleted", nil)
 }
-

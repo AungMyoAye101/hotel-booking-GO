@@ -1,4 +1,4 @@
-﻿package main
+package main
 
 import (
 	"log"
@@ -14,6 +14,7 @@ import (
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/room"
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/user"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/db"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -29,7 +30,7 @@ func main() {
 	}
 	app := NewApp(cfg)
 	app.echo.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "Welcome to Hotel Booking System APIs")
+		return response.SuccessResponse(c, http.StatusOK, "welcome", "Welcome to Hotel Booking System APIs")
 	})
 
 	auth.Run(app.echo, db, cfg)

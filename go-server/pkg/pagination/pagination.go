@@ -18,11 +18,8 @@ type Meta struct {
 	Limit      int   `json:"limit"`
 	Total      int64 `json:"total"`
 	TotalPages int   `json:"total_pages"`
-}
-
-type Response[T any] struct {
-	Data []T  `json:"data"`
-	Meta Meta `json:"meta"`
+	HasNext    bool  `json:"hasNext"`
+	HasPrev    bool  `json:"hasPrev"`
 }
 
 func Parse(c echo.Context) (Params, error) {
@@ -56,11 +53,15 @@ func NewMeta(params Params, total int64) Meta {
 	if params.Limit > 0 {
 		totalPages = int(math.Ceil(float64(total) / float64(params.Limit)))
 	}
+	hasNext := params.Page < totalPages
+	hasPrev := params.Page > 1
+
 	return Meta{
 		Page:       params.Page,
 		Limit:      params.Limit,
 		Total:      total,
 		TotalPages: totalPages,
+		HasNext:    hasNext,
+		HasPrev:    hasPrev,
 	}
 }
-

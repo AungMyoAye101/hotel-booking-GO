@@ -3,6 +3,7 @@ package auth
 import (
 	"net/http"
 
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/labstack/echo/v4"
 )
 
@@ -26,5 +27,5 @@ func (h *Handler) Register(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return c.JSON(http.StatusCreated, user)
+	return response.SuccessResponse(c, http.StatusCreated, "user registered", user)
 }

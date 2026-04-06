@@ -3,8 +3,8 @@ package hotel
 import (
 	"net/http"
 
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/pagination"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -32,7 +32,7 @@ func (h *Handler) CreateHotel(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusCreated, hotel)
+	return response.SuccessResponse(c, http.StatusCreated, "hotel created", hotel)
 }
 
 func (h *Handler) GetAllHotels(c echo.Context) error {
@@ -47,10 +47,13 @@ func (h *Handler) GetAllHotels(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, pagination.Response[models.Hotel]{
-		Data: hotels,
-		Meta: pagination.NewMeta(params, total),
-	})
+	return response.SuccessResponseWithMeta(
+		c,
+		http.StatusOK,
+		"hotels fetched",
+		hotels,
+		pagination.NewMeta(params, total),
+	)
 }
 
 func (h *Handler) GetHotelByID(c echo.Context) error {
@@ -67,7 +70,7 @@ func (h *Handler) GetHotelByID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, hotel)
+	return response.SuccessResponse(c, http.StatusOK, "hotel fetched", hotel)
 }
 
 func (h *Handler) UpdateHotel(c echo.Context) error {
@@ -92,7 +95,7 @@ func (h *Handler) UpdateHotel(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, hotel)
+	return response.SuccessResponse(c, http.StatusOK, "hotel updated", hotel)
 }
 
 func (h *Handler) DeleteHotel(c echo.Context) error {
@@ -108,6 +111,5 @@ func (h *Handler) DeleteHotel(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return response.SuccessResponse(c, http.StatusOK, "hotel deleted", nil)
 }
-

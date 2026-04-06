@@ -5,8 +5,7 @@ import (
 	"log"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/logging"
-	appmiddleware "github.com/AungMyoAye101/hotel-booking-GO/pkg/middleware"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/validation"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -21,11 +20,9 @@ func NewApp(cfg *config.Config) *APP {
 	e := echo.New()
 
 	e.Validator = validation.New()
+	e.HTTPErrorHandler = response.HTTPErrorHandler
 
-	logger := logging.New()
-	e.Use(middleware.RequestID())
-	e.Use(appmiddleware.RequestLogger(logger))
-	e.Use(middleware.Recover())
+	e.Use(middleware.RequestLogger())
 
 	app := &APP{
 		echo: e,

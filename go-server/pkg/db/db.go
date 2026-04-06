@@ -1,7 +1,6 @@
 package db
 
 import (
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -16,19 +15,19 @@ func Connect(url string) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(
-		&models.Admin{},
-		&models.User{},
-		&models.Image{},
-		&models.Hotel{},
-		&models.Room{},
-		&models.Booking{},
-		&models.Review{},
-		&models.Payment{},
-		&models.Receipt{},
-	); err != nil {
-		return nil, err
-	}
+	// if err := db.AutoMigrate(
+	// 	&models.Admin{},
+	// 	&models.User{},
+	// 	&models.Image{},
+	// 	&models.Hotel{},
+	// 	&models.Room{},
+	// 	&models.Booking{},
+	// 	&models.Review{},
+	// 	&models.Payment{},
+	// 	&models.Receipt{},
+	// ); err != nil {
+	// 	return nil, err
+	// }
 
 	return db, nil
 }

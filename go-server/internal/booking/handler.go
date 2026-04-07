@@ -29,6 +29,9 @@ func (h *Handler) CreateBooking(c echo.Context) error {
 
 	b, err := h.service.Create(dto)
 	if err != nil {
+		if httpErr, ok := err.(*echo.HTTPError); ok {
+			return httpErr
+		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	return response.SuccessResponse(c, http.StatusCreated, "booking created", b)

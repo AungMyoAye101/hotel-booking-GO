@@ -14,6 +14,7 @@ func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 
 	api := e.Group("/api/v1/rooms")
 	api.GET("", handler.GetAllRooms)
+	api.GET("/hotel/:hotelId", handler.GetRoomsByHotelID)
 	api.GET("/:id", handler.GetRoomByID)
 
 	protected := api.Group("")

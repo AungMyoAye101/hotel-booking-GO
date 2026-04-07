@@ -1,6 +1,8 @@
 package room
 
 import (
+	"time"
+
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -8,6 +10,17 @@ import (
 
 type Service struct {
 	repo *Repository
+}
+
+type AvailabilityFilter struct {
+	CheckIn   time.Time
+	CheckOut  time.Time
+	MaxPeople *int
+}
+
+type AvailableRoom struct {
+	models.Room
+	AvailableRooms int `json:"available_rooms" gorm:"column:available_rooms"`
 }
 
 func NewService(r *Repository) *Service {
@@ -32,6 +45,10 @@ func (s *Service) Create(dto CreateRoomDTO) (*models.Room, error) {
 
 func (s *Service) FindAll(offset, limit int) ([]models.Room, int64, error) {
 	return s.repo.FindAll(offset, limit)
+}
+
+func (s *Service) FindAvailableByHotelID(hotelID uuid.UUID, filter AvailabilityFilter) ([]AvailableRoom, error) {
+	return s.repo.FindAvailableByHotelID(hotelID, filter)
 }
 
 func (s *Service) FindByID(id uuid.UUID) (*models.Room, error) {
@@ -82,4 +99,3 @@ func (s *Service) Delete(id uuid.UUID) error {
 	}
 	return nil
 }
-

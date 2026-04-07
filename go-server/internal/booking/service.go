@@ -1,6 +1,7 @@
 package booking
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
@@ -39,8 +40,20 @@ func (s *Service) Create(dto CreateBookingDTO) (*models.Booking, error) {
 		Status:     status,
 		TotalPrice: dto.TotalPrice,
 	}
-	if err := s.repo.Create(b); err != nil {
-		return nil, err
+
+	if err := s.repo.CreateWithAvailability(b); err != nil {
+		switch {
+		case errors.Is(err, gorm.ErrRecordNotFound):
+			return nil, echo.NewHTTPError(http.StatusNotFound, "room not found")
+		case errors.Is(err, ErrRoomHotelMismatch):
+			return nil, echo.NewHTTPError(http.StatusBadRequest, "room_id does not belong to hotel_id")
+		case errors.Is(err, ErrGuestExceedsCapacity):
+			return nil, echo.NewHTTPError(http.StatusBadRequest, "guest exceeds room capacity")
+		case errors.Is(err, ErrNotEnoughRooms):
+			return nil, echo.NewHTTPError(http.StatusConflict, "not enough rooms available for selected dates")
+		default:
+			return nil, err
+		}
 	}
 	return b, nil
 }
@@ -112,4 +125,3 @@ func (s *Service) Delete(id uuid.UUID) error {
 	}
 	return nil
 }
-

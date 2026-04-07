@@ -25,7 +25,7 @@ type Booking struct {
 	TotalPrice float64        `gorm:"type:numeric(12,2);not null" json:"total_price" validate:"required,gte=0"`
 	CreatedAt  time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt  time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt  gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	DeletedAt  gorm.DeletedAt `json:"deleted_at,omitempty"`
 
 	// Associations
 	User  *User  `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;" json:"user,omitempty"`

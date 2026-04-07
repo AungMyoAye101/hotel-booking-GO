@@ -7,16 +7,19 @@ import (
 )
 
 func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
-	_ = cfg
-
 	repo := NewRepository(db)
-	service := NewService(repo)
+	service := NewService(repo, cfg.AUTH.ACCESS_SECRET, cfg.AUTH.REFRESH_SECRET)
 	handler := NewHandler(service)
 
 	api := e.Group("/api/v1/auth")
 	api.POST("/register", handler.Register)
-	// api.GET("/login", handler.login)
-	// api.GET("/logout", handler.logout)
-	// api.PUT("/refresh", handler.Refresh)
+	api.POST("/login", handler.Login)
+	api.POST("/refresh", handler.Refresh)
+	api.POST("/logout", handler.Logout)
+
+	admin := api.Group("/admin")
+	admin.POST("/login", handler.AdminLogin)
+	admin.POST("/refresh", handler.AdminRefresh)
+	admin.POST("/logout", handler.AdminLogout)
 
 }

@@ -5,10 +5,10 @@ import (
 	"log"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/middleware"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/validation"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 type APP struct {

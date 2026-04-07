@@ -15,7 +15,7 @@ type User struct {
 	City      string         `gorm:"type:varchar(100)" json:"city" validate:"max=100"`
 	Country   string         `gorm:"type:varchar(100)" json:"country" validate:"max=100"`
 	Phone     string         `gorm:"type:varchar(20)" json:"phone" validate:"max=20"`
-	Token     string         `gorm:"type:text" json:"token,omitempty"`
+	Token     string         `gorm:"type:text" json:"-"`
 	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`

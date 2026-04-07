@@ -14,21 +14,6 @@ func NewService(r *Repository) *Service {
 	return &Service{repo: r}
 }
 
-func (s *Service) Create(dto CreateUserDTO) (*models.User, error) {
-	u := &models.User{
-		Name:     dto.Name,
-		Email:    dto.Email,
-		Password: dto.Password,
-		City:     dto.City,
-		Country:  dto.Country,
-		Phone:    dto.Phone,
-	}
-	if err := s.repo.Create(u); err != nil {
-		return nil, err
-	}
-	return u, nil
-}
-
 func (s *Service) FindAll(offset, limit int) ([]models.User, int64, error) {
 	return s.repo.FindAll(offset, limit)
 }

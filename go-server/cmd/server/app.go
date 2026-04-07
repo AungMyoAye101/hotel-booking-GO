@@ -19,11 +19,9 @@ type APP struct {
 func NewApp(cfg *config.Config) *APP {
 	e := echo.New()
 
+	e.Use(middleware.RequestLogger())
 	e.Validator = validation.New()
 	e.HTTPErrorHandler = response.HTTPErrorHandler
-
-	e.Use(middleware.RequestLogger())
-
 	app := &APP{
 		echo: e,
 		cfg:  cfg,

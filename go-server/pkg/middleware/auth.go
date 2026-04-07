@@ -26,6 +26,7 @@ func GetPrincipal(c echo.Context) (Principal, bool) {
 }
 
 func BearerAuth(accessSecret string) echo.MiddlewareFunc {
+	secret := []byte(accessSecret)
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			auth := c.Request().Header.Get("Authorization")
@@ -41,16 +42,51 @@ func BearerAuth(accessSecret string) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusUnauthorized, "invalid authorization header")
 			}
 
-			claims, err := utils.ParseAndVerifyHS256(token, accessSecret)
-			if err != nil || claims.Typ != "access" {
-				return echo.NewHTTPError(http.StatusUnauthorized, "invalid access token")
+			claims, err := utils.ParseToken(token, secret)
+			if err != nil {
+				if err == utils.ErrExpiredToken {
+					return echo.NewHTTPError(http.StatusUnauthorized, "token expired")
+				}
+				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
+			}
+			if claims.Typ != "" && claims.Typ != "access" {
+				return echo.NewHTTPError(http.StatusUnauthorized, "invalid token")
+			}
+
+			kind := claims.Kind
+			if kind == "" {
+				if claims.Role == "admin" || claims.Role == "staff" {
+					kind = "admin"
+				} else {
+					kind = "user"
+				}
 			}
 
 			c.Set(principalCtxKey, Principal{
 				ID:   claims.Sub,
-				Kind: claims.Aud,
+				Kind: kind,
 				Role: claims.Role,
 			})
+			return next(c)
+		}
+	}
+}
+
+func RequireKind(kinds ...string) echo.MiddlewareFunc {
+	allowed := map[string]struct{}{}
+	for _, k := range kinds {
+		allowed[k] = struct{}{}
+	}
+
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			p, ok := GetPrincipal(c)
+			if !ok {
+				return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+			}
+			if _, ok := allowed[p.Kind]; !ok {
+				return echo.NewHTTPError(http.StatusForbidden, "forbidden")
+			}
 			return next(c)
 		}
 	}

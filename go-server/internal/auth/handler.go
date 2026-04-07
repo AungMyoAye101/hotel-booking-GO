@@ -6,7 +6,6 @@ import (
 
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 type Handler struct {
@@ -25,16 +24,13 @@ func (h *Handler) Register(c echo.Context) error {
 	if err := c.Validate(dto); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	user, err := h.service.Create(dto)
+	user, refreshToken, err := h.service.Register(dto)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	return response.SuccessResponse(c, http.StatusCreated, "user registered", user)
-}
 
-type loginResponse struct {
-	AccessToken string `json:"accessToken"`
-	User        any    `json:"user"`
+	setRefreshCookie(c, refreshToken)
+	return response.SuccessResponse(c, http.StatusCreated, "user registered", user)
 }
 
 func (h *Handler) Login(c echo.Context) error {
@@ -46,20 +42,15 @@ func (h *Handler) Login(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	user, pair, err := h.service.LoginUser(dto)
+	user, refreshToken, err := h.service.Login(dto)
 	if err != nil {
-		if err == ErrInvalidCredentials || err == gorm.ErrRecordNotFound {
-			return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
+		if err == ErrInvalidCredentials {
+			return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-
-	user.Token = ""
-	setRefreshCookie(c, userRefreshCookieName, pair.RefreshToken, "/api/v1/auth", 7*24*time.Hour)
-	return response.SuccessResponse(c, http.StatusOK, "login success", loginResponse{
-		AccessToken: pair.AccessToken,
-		User:        user,
-	})
+	setRefreshCookie(c, refreshToken)
+	return response.SuccessResponse(c, http.StatusOK, "login success", user)
 }
 
 func (h *Handler) AdminLogin(c echo.Context) error {
@@ -71,105 +62,44 @@ func (h *Handler) AdminLogin(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	admin, pair, err := h.service.LoginAdmin(dto)
+	admin, refreshToken, err := h.service.AdminLogin(dto)
 	if err != nil {
-		if err == ErrInvalidCredentials || err == gorm.ErrRecordNotFound {
-			return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
+		if err == ErrInvalidCredentials {
+			return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	setRefreshCookie(c, refreshToken)
+	return response.SuccessResponse(c, http.StatusOK, "login success", admin)
+}
 
-	admin.Token = ""
-	setRefreshCookie(c, adminRefreshCookieName, pair.RefreshToken, "/api/v1/auth/admin", 7*24*time.Hour)
-	return response.SuccessResponse(c, http.StatusOK, "login success", loginResponse{
-		AccessToken: pair.AccessToken,
-		User:        admin,
-	})
+type tokenResponse struct {
+	Token string `json:"token"`
 }
 
 func (h *Handler) Refresh(c echo.Context) error {
-	rt, err := c.Cookie(userRefreshCookieName)
-	if err != nil || rt.Value == "" {
+	rc, err := c.Cookie("refresh_token")
+	if err != nil || rc == nil || rc.Value == "" {
 		return echo.NewHTTPError(http.StatusUnauthorized, "missing refresh token")
 	}
 
-	pair, err := h.service.RefreshUser(rt.Value)
+	accessToken, newRefresh, err := h.service.Refresh(rc.Value)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "invalid refresh token")
 	}
-
-	setRefreshCookie(c, userRefreshCookieName, pair.RefreshToken, "/api/v1/auth", 7*24*time.Hour)
-	return response.SuccessResponse(c, http.StatusOK, "token refreshed", map[string]string{
-		"accessToken": pair.AccessToken,
-	})
+	setRefreshCookie(c, newRefresh)
+	return response.SuccessResponse(c, http.StatusOK, "token refreshed", tokenResponse{Token: accessToken})
 }
 
-func (h *Handler) AdminRefresh(c echo.Context) error {
-	rt, err := c.Cookie(adminRefreshCookieName)
-	if err != nil || rt.Value == "" {
-		return echo.NewHTTPError(http.StatusUnauthorized, "missing refresh token")
-	}
-
-	pair, err := h.service.RefreshAdmin(rt.Value)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusUnauthorized, "invalid refresh token")
-	}
-
-	setRefreshCookie(c, adminRefreshCookieName, pair.RefreshToken, "/api/v1/auth/admin", 7*24*time.Hour)
-	return response.SuccessResponse(c, http.StatusOK, "token refreshed", map[string]string{
-		"accessToken": pair.AccessToken,
-	})
-}
-
-func (h *Handler) Logout(c echo.Context) error {
-	var rt string
-	if cookie, err := c.Cookie(userRefreshCookieName); err == nil {
-		rt = cookie.Value
-	}
-	_ = h.service.LogoutUser(rt)
-	clearCookie(c, userRefreshCookieName, "/api/v1/auth")
-	return response.SuccessResponse(c, http.StatusOK, "logged out", nil)
-}
-
-func (h *Handler) AdminLogout(c echo.Context) error {
-	var rt string
-	if cookie, err := c.Cookie(adminRefreshCookieName); err == nil {
-		rt = cookie.Value
-	}
-	_ = h.service.LogoutAdmin(rt)
-	clearCookie(c, adminRefreshCookieName, "/api/v1/auth/admin")
-	return response.SuccessResponse(c, http.StatusOK, "logged out", nil)
-}
-
-const (
-	userRefreshCookieName  = "refresh_token"
-	adminRefreshCookieName = "refresh_token_admin"
-)
-
-func setRefreshCookie(c echo.Context, name, value, path string, ttl time.Duration) {
+func setRefreshCookie(c echo.Context, refreshToken string) {
 	secure := c.Scheme() == "https"
 	c.SetCookie(&http.Cookie{
-		Name:     name,
-		Value:    value,
-		Path:     path,
-		Expires:  time.Now().Add(ttl),
-		MaxAge:   int(ttl.Seconds()),
+		Name:     "refresh_token",
+		Value:    refreshToken,
+		Path:     "/api/v1/auth",
 		HttpOnly: true,
 		Secure:   secure,
 		SameSite: http.SameSiteLaxMode,
-	})
-}
-
-func clearCookie(c echo.Context, name, path string) {
-	secure := c.Scheme() == "https"
-	c.SetCookie(&http.Cookie{
-		Name:     name,
-		Value:    "",
-		Path:     path,
-		Expires:  time.Unix(0, 0),
-		MaxAge:   -1,
-		HttpOnly: true,
-		Secure:   secure,
-		SameSite: http.SameSiteLaxMode,
+		Expires:  time.Now().Add(7 * 24 * time.Hour),
 	})
 }

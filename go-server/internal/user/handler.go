@@ -3,6 +3,7 @@ package user
 import (
 	"net/http"
 
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/middleware"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/pagination"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/google/uuid"
@@ -16,22 +17,6 @@ type Handler struct {
 
 func NewHandler(s *Service) *Handler {
 	return &Handler{service: s}
-}
-
-func (h *Handler) CreateUser(c echo.Context) error {
-	var dto CreateUserDTO
-	if err := c.Bind(&dto); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid body")
-	}
-	if err := c.Validate(dto); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
-	u, err := h.service.Create(dto)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	return response.SuccessResponse(c, http.StatusCreated, "user created", u)
 }
 
 func (h *Handler) GetAllUsers(c echo.Context) error {
@@ -62,6 +47,14 @@ func (h *Handler) GetUserByID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
 
+	p, ok := middleware.GetPrincipal(c)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	}
+	if p.Kind == "user" && p.ID != id.String() {
+		return echo.NewHTTPError(http.StatusForbidden, "forbidden")
+	}
+
 	u, err := h.service.FindByID(id)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -76,6 +69,14 @@ func (h *Handler) UpdateUser(c echo.Context) error {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
+	}
+
+	p, ok := middleware.GetPrincipal(c)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	}
+	if p.Kind == "user" && p.ID != id.String() {
+		return echo.NewHTTPError(http.StatusForbidden, "forbidden")
 	}
 
 	var dto UpdateUserDTO
@@ -100,6 +101,14 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
+	}
+
+	p, ok := middleware.GetPrincipal(c)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	}
+	if p.Kind == "user" && p.ID != id.String() {
+		return echo.NewHTTPError(http.StatusForbidden, "forbidden")
 	}
 
 	if err := h.service.Delete(id); err != nil {

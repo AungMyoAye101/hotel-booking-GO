@@ -1,13 +1,10 @@
 package utils
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
-	"encoding/json"
 	"errors"
-	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 var (
@@ -15,130 +12,75 @@ var (
 	ErrExpiredToken = errors.New("token expired")
 )
 
-type JWTClaims struct {
-	Sub  string `json:"sub"`
-	Aud  string `json:"aud"`
-	Role string `json:"role,omitempty"`
-	Typ  string `json:"typ"` // "access" | "refresh"
-	Exp  int64  `json:"exp"`
-	Iat  int64  `json:"iat"`
-	Jti  string `json:"jti,omitempty"`
+type Claims struct {
+	Sub   string `json:"sub"`
+	Email string `json:"email"`
+	Kind  string `json:"kind,omitempty"` // "user" | "admin"
+	Role  string `json:"role,omitempty"`
+	Typ   string `json:"typ,omitempty"` // "access" | "refresh"
+	jwt.RegisteredClaims
 }
 
-func SignHS256(claims JWTClaims, secret string) (string, error) {
-	if secret == "" {
-		return "", errors.New("secret is required")
-	}
+func GenerateAccessToken(sub string, email string, role string, secret []byte) (string, error) {
 
-	headerJSON, err := json.Marshal(map[string]string{
-		"alg": "HS256",
-		"typ": "JWT",
+	kind := "user"
+	if role == "admin" || role == "staff" {
+		kind = "admin"
+	}
+	claims := Claims{
+		Sub:   sub,
+		Email: email,
+		Kind:  kind,
+		Role:  role,
+		Typ:   "access",
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(secret)
+
+}
+func GenerateRefreshToken(sub string, email string, role string, secret []byte) (string, error) {
+	kind := "user"
+	if role == "admin" || role == "staff" {
+		kind = "admin"
+	}
+	claims := Claims{
+		Sub:   sub,
+		Email: email,
+		Kind:  kind,
+		Role:  role,
+		Typ:   "refresh",
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(7 * 24 * time.Hour)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(secret)
+
+}
+
+func ParseToken(tokenStr string, secret []byte) (*Claims, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &Claims{}, func(t *jwt.Token) (interface{}, error) {
+		// Ensure signing method is correct
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, ErrInvalidToken
+		}
+		return secret, nil
 	})
+
 	if err != nil {
-		return "", err
-	}
-	payloadJSON, err := json.Marshal(claims)
-	if err != nil {
-		return "", err
-	}
-
-	enc := base64.RawURLEncoding
-	headerPart := enc.EncodeToString(headerJSON)
-	payloadPart := enc.EncodeToString(payloadJSON)
-	signingInput := headerPart + "." + payloadPart
-
-	mac := hmac.New(sha256.New, []byte(secret))
-	_, _ = mac.Write([]byte(signingInput))
-	sigPart := enc.EncodeToString(mac.Sum(nil))
-
-	return signingInput + "." + sigPart, nil
-}
-
-func ParseAndVerifyHS256(token string, secret string) (JWTClaims, error) {
-	var claims JWTClaims
-
-	parts := strings.Split(token, ".")
-	if len(parts) != 3 {
-		return claims, ErrInvalidToken
+		if errors.Is(err, jwt.ErrTokenExpired) {
+			return nil, ErrExpiredToken
+		}
+		return nil, ErrInvalidToken
 	}
 
-	enc := base64.RawURLEncoding
-
-	headerBytes, err := enc.DecodeString(parts[0])
-	if err != nil {
-		return claims, ErrInvalidToken
-	}
-	var header struct {
-		Alg string `json:"alg"`
-		Typ string `json:"typ"`
-	}
-	if err := json.Unmarshal(headerBytes, &header); err != nil {
-		return claims, ErrInvalidToken
-	}
-	if header.Alg != "HS256" {
-		return claims, ErrInvalidToken
-	}
-
-	signingInput := parts[0] + "." + parts[1]
-	mac := hmac.New(sha256.New, []byte(secret))
-	_, _ = mac.Write([]byte(signingInput))
-	expectedSig := mac.Sum(nil)
-
-	sigBytes, err := enc.DecodeString(parts[2])
-	if err != nil {
-		return claims, ErrInvalidToken
-	}
-	if !hmac.Equal(sigBytes, expectedSig) {
-		return claims, ErrInvalidToken
-	}
-
-	payloadBytes, err := enc.DecodeString(parts[1])
-	if err != nil {
-		return claims, ErrInvalidToken
-	}
-	if err := json.Unmarshal(payloadBytes, &claims); err != nil {
-		return claims, ErrInvalidToken
-	}
-
-	if claims.Exp == 0 || claims.Sub == "" || claims.Typ == "" || claims.Aud == "" {
-		return claims, ErrInvalidToken
-	}
-
-	now := time.Now().Unix()
-	if now > claims.Exp {
-		return claims, ErrExpiredToken
+	claims, ok := token.Claims.(*Claims)
+	if !ok || !token.Valid {
+		return nil, ErrInvalidToken
 	}
 
 	return claims, nil
-}
-
-func NewAccessClaims(sub, aud, role string, ttl time.Duration) JWTClaims {
-	now := time.Now()
-	c := JWTClaims{
-		Sub: sub,
-		Aud: aud,
-		Typ: "access",
-		Iat: now.Unix(),
-		Exp: now.Add(ttl).Unix(),
-	}
-	if role != "" {
-		c.Role = role
-	}
-	return c
-}
-
-func NewRefreshClaims(sub, aud, role, jti string, ttl time.Duration) JWTClaims {
-	now := time.Now()
-	c := JWTClaims{
-		Sub: sub,
-		Aud: aud,
-		Typ: "refresh",
-		Jti: jti,
-		Iat: now.Unix(),
-		Exp: now.Add(ttl).Unix(),
-	}
-	if role != "" {
-		c.Role = role
-	}
-	return c
 }

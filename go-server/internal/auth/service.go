@@ -211,3 +211,79 @@ func (s *Service) Refresh(refreshToken string) (string, string, error) {
 		return accessToken, newRefresh, nil
 	}
 }
+
+func (s *Service) CurrentAdmin(refreshToken string) (*AdminResponse, error) {
+	claims, err := utils.ParseToken(refreshToken, s.refreshSecret)
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+	if claims.Typ != "refresh" {
+		return nil, ErrInvalidCredentials
+	}
+
+	id, err := uuid.Parse(claims.Sub)
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+
+	admin, err := s.repo.FindAdminByID(id)
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+	if admin.Token == "" || !utils.TokensEqualHash(admin.Token, refreshToken) {
+		return nil, ErrInvalidCredentials
+	}
+
+	accessToken, err := utils.GenerateAccessToken(admin.ID.String(), admin.Email, admin.Role, s.accessSecret)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AdminResponse{
+		ID:    admin.ID.String(),
+		Name:  admin.Name,
+		Email: admin.Email,
+		Role:  admin.Role,
+		Token: accessToken,
+	}, nil
+}
+func (s *Service) CurrentUser(refreshToken string) (*UserResponse, error) {
+	claims, err := utils.ParseToken(refreshToken, s.refreshSecret)
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+	if claims.Typ != "refresh" {
+		return nil, ErrInvalidCredentials
+	}
+	id, err := uuid.Parse(claims.Sub)
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+	user, err := s.repo.FindUserByID(id)
+	if err != nil {
+		return nil, ErrInvalidCredentials
+	}
+	if user.Token == "" || !utils.TokensEqualHash(user.Token, refreshToken) {
+		return nil, ErrInvalidCredentials
+	}
+
+	accessToken, err := utils.GenerateAccessToken(user.ID.String(), user.Email, "user", s.accessSecret)
+	if err != nil {
+		return nil, err
+	}
+	newRefresh, err := utils.GenerateRefreshToken(user.ID.String(), user.Email, "user", s.refreshSecret)
+	if err != nil {
+		return nil, err
+	}
+	user.Token = utils.HashToken(newRefresh)
+	if err := s.repo.SaveUser(user); err != nil {
+		return nil, err
+	}
+
+	return &UserResponse{
+		ID:    user.ID.String(),
+		Name:  user.Name,
+		Email: user.Email,
+		Token: accessToken,
+	}, nil
+}

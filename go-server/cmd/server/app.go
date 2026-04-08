@@ -5,10 +5,11 @@ import (
 	"log"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/middleware"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/middlewares"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/validation"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type APP struct {
@@ -18,8 +19,10 @@ type APP struct {
 
 func NewApp(cfg *config.Config) *APP {
 	e := echo.New()
-
+	e.Use(middlewares.CORS())
+	e.Use(middleware.RateLimiter(middleware.NewRateLimiterMemoryStore(20)))
 	e.Use(middleware.RequestLogger())
+	e.Use(middleware.Recover())
 	e.Validator = validation.New()
 	e.HTTPErrorHandler = response.HTTPErrorHandler
 	app := &APP{

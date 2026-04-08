@@ -1,10 +1,11 @@
 package auth
 
 import (
+	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -28,8 +29,8 @@ func (h *Handler) Register(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+	utils.SetRefreshCookie(c, refreshToken)
 
-	setRefreshCookie(c, refreshToken)
 	return response.SuccessResponse(c, http.StatusCreated, "user registered", user)
 }
 
@@ -49,7 +50,7 @@ func (h *Handler) Login(c echo.Context) error {
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	setRefreshCookie(c, refreshToken)
+	utils.SetRefreshCookie(c, refreshToken)
 	return response.SuccessResponse(c, http.StatusOK, "login success", user)
 }
 
@@ -69,7 +70,7 @@ func (h *Handler) AdminLogin(c echo.Context) error {
 		}
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	setRefreshCookie(c, refreshToken)
+	utils.SetRefreshCookie(c, refreshToken)
 	return response.SuccessResponse(c, http.StatusOK, "login success", admin)
 }
 
@@ -87,19 +88,33 @@ func (h *Handler) Refresh(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusUnauthorized, "invalid refresh token")
 	}
-	setRefreshCookie(c, newRefresh)
+	utils.SetRefreshCookie(c, newRefresh)
 	return response.SuccessResponse(c, http.StatusOK, "token refreshed", tokenResponse{Token: accessToken})
 }
 
-func setRefreshCookie(c echo.Context, refreshToken string) {
-	secure := c.Scheme() == "https"
-	c.SetCookie(&http.Cookie{
-		Name:     "refresh_token",
-		Value:    refreshToken,
-		Path:     "/api/v1/auth",
-		HttpOnly: true,
-		Secure:   secure,
-		SameSite: http.SameSiteLaxMode,
-		Expires:  time.Now().Add(7 * 24 * time.Hour),
-	})
+func (h *Handler) CurrentUser(c echo.Context) error {
+	rc, err := c.Cookie("refresh_token")
+	fmt.Println(rc)
+	if err != nil || rc == nil || rc.Value == "" {
+		return echo.NewHTTPError(http.StatusUnauthorized, "missing refresh token")
+	}
+	user, err := h.service.CurrentUser(rc.Value)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, "Get current user", user)
+}
+
+func (h *Handler) CurrentAdmin(c echo.Context) error {
+	rc, err := c.Cookie("refresh_token")
+	if err != nil || rc == nil || rc.Value == "" {
+		return echo.NewHTTPError(http.StatusUnauthorized, "missing refresh token")
+	}
+	user, err := h.service.CurrentAdmin(rc.Value)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid credentials")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, "Get current admin", user)
 }

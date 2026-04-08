@@ -3,7 +3,7 @@ package user
 import (
 	"net/http"
 
-	"github.com/AungMyoAye101/hotel-booking-GO/pkg/middleware"
+	"github.com/AungMyoAye101/hotel-booking-GO/pkg/middlewares"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/pagination"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
 	"github.com/google/uuid"
@@ -47,7 +47,7 @@ func (h *Handler) GetUserByID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
 
-	p, ok := middleware.GetPrincipal(c)
+	p, ok := middlewares.GetPrincipal(c)
 	if !ok {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}
@@ -71,7 +71,7 @@ func (h *Handler) UpdateUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
 
-	p, ok := middleware.GetPrincipal(c)
+	p, ok := middlewares.GetPrincipal(c)
 	if !ok {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}
@@ -103,7 +103,7 @@ func (h *Handler) DeleteUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid id")
 	}
 
-	p, ok := middleware.GetPrincipal(c)
+	p, ok := middlewares.GetPrincipal(c)
 	if !ok {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}

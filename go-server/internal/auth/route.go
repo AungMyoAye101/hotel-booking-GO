@@ -15,9 +15,11 @@ func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	api.POST("/register", handler.Register)
 	api.POST("/login", handler.Login)
 	api.POST("/refresh", handler.Refresh)
+	api.POST("/me", handler.CurrentUser)
 
 	admin := api.Group("/admin")
 	admin.POST("/login", handler.AdminLogin)
 	admin.POST("/refresh", handler.Refresh)
+	admin.POST("/me", handler.CurrentAdmin)
 
 }

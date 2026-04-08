@@ -64,13 +64,15 @@ func (h *Handler) GetRoomsByHotelID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid hotel id")
 	}
 
-	checkInRaw := c.QueryParam("check_in")
+	checkInRaw := c.QueryParam("checkIn")
+
 	if checkInRaw == "" {
-		checkInRaw = c.QueryParam("checkin")
+		checkInRaw = c.QueryParam("checkIn")
 	}
-	checkOutRaw := c.QueryParam("check_out")
+	checkOutRaw := c.QueryParam("checkOut")
+
 	if checkOutRaw == "" {
-		checkOutRaw = c.QueryParam("checkout")
+		checkOutRaw = c.QueryParam("checkOut")
 	}
 	if checkInRaw == "" || checkOutRaw == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "check_in and check_out are required")

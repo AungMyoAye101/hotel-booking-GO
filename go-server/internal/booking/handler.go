@@ -20,6 +20,7 @@ func NewHandler(s *Service) *Handler {
 
 func (h *Handler) CreateBooking(c echo.Context) error {
 	var dto CreateBookingDTO
+
 	if err := c.Bind(&dto); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid body")
 	}

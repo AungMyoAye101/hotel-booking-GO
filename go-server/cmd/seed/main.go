@@ -174,14 +174,14 @@ func seedAll(db *gorm.DB) error {
 	images := []models.Image{
 		{
 			ID:        imageHotel1ID,
-			SecureURL: "https://res.cloudinary.com/dnxnmdcjb/image/upload/v1771310526/Booking/rmkwkcqwwz56lrpxvz1i.webp",
+			SecureURL: "https://res.cloudinary.com/dnxnmdcjb/image/upload/v1771310527/Booking/wsw8p37h1civp44an6fi.webp",
 			PublicID:  "hotel_1",
 			CreatedAt: now.Add(-72 * time.Hour),
 			UpdatedAt: now.Add(-72 * time.Hour),
 		},
 		{
 			ID:        imageHotel2ID,
-			SecureURL: "https://res.cloudinary.com/dnxnmdcjb/image/upload/v1771310521/Booking/qljkou9vnusstoofn2ss.webp",
+			SecureURL: "https://res.cloudinary.com/dnxnmdcjb/image/upload/v1771310527/Booking/wsw8p37h1civp44an6fi.webp",
 			PublicID:  "hotel_2",
 			CreatedAt: now.Add(-48 * time.Hour),
 			UpdatedAt: now.Add(-48 * time.Hour),
@@ -248,7 +248,7 @@ func seedAll(db *gorm.DB) error {
 			Price:       150.00,
 			City:        "Yangon",
 			Country:     "Myanmar",
-			Amenities:   []string{"Free WiFi", "Swimming Pool", "Spa", "Fine Dining"},
+			Amenities:   []string{"wifi", "parking", "pool", "ac", "gym", "breakfast"},
 		},
 		{
 			ID:          hotel2ID,
@@ -262,7 +262,7 @@ func seedAll(db *gorm.DB) error {
 			Price:       25.50,
 			City:        "Mandalay",
 			Country:     "Myanmar",
-			Amenities:   []string{"Free Breakfast", "Bicycle Rental", "Air Conditioning"},
+			Amenities:   []string{"wifi", "parking", "pool", "ac", "gym", "breakfast"},
 		},
 		{
 			ID:          hotel3ID,
@@ -276,7 +276,7 @@ func seedAll(db *gorm.DB) error {
 			Price:       40.00,
 			City:        "Bagan",
 			Country:     "Myanmar",
-			Amenities:   []string{"Parking", "E-bike Charging", "Tour Desk"},
+			Amenities:   []string{"wifi", "parking", "pool", "ac", "gym", "breakfast"},
 		},
 		{
 			ID:          hotel4ID,
@@ -290,7 +290,7 @@ func seedAll(db *gorm.DB) error {
 			Price:       110.00,
 			City:        "Nyaungshwe",
 			Country:     "Myanmar",
-			Amenities:   []string{"Boat Tours", "Lake View", "Restaurant", "Sunset Bar"},
+			Amenities:   []string{"wifi", "parking", "pool", "ac", "gym", "breakfast"},
 		},
 		{
 			ID:          hotel5ID,
@@ -304,7 +304,7 @@ func seedAll(db *gorm.DB) error {
 			Price:       85.00,
 			City:        "Naypyidaw",
 			Country:     "Myanmar",
-			Amenities:   []string{"Conference Room", "Gym", "Airport Shuttle", "Coffee Shop"},
+			Amenities:   []string{"wifi", "parking", "pool", "ac", "gym", "breakfast"},
 		},
 	}
 

@@ -22,7 +22,7 @@ func (r *Repository) Create(h *models.Hotel) error {
 
 func (r *Repository) FindByID(id uuid.UUID) (*models.Hotel, error) {
 	var h models.Hotel
-	if err := r.db.First(&h, "id = ?", id).Error; err != nil {
+	if err := r.db.Preload("Photo").First(&h, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, gorm.ErrRecordNotFound
 		}
@@ -38,7 +38,7 @@ func (r *Repository) FindAll(offset, limit int) ([]models.Hotel, int64, error) {
 	}
 
 	var hotels []models.Hotel
-	if err := r.db.Order("created_at desc").Offset(offset).Limit(limit).Find(&hotels).Error; err != nil {
+	if err := r.db.Preload("Photo").Order("created_at desc").Offset(offset).Limit(limit).Find(&hotels).Error; err != nil {
 		return nil, 0, err
 	}
 

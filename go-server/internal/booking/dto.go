@@ -37,3 +37,47 @@ type UpdateBookingDTO struct {
 	TotalPrice *float64   `json:"total_price" validate:"omitempty,gte=0"`
 }
 
+type BookingUserSummaryDTO struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
+}
+
+type BookingHotelSummaryDTO struct {
+	ID       uuid.UUID `json:"id"`
+	Name     string    `json:"name"`
+	City     string    `json:"city"`
+	Country  string    `json:"country"`
+	Rating   float64   `json:"rating"`
+	Star     int       `json:"star"`
+	Address  string    `json:"address"`
+	PhotoURL string    `json:"photo_url"`
+}
+
+type BookingRoomSummaryDTO struct {
+	ID       uuid.UUID `json:"id"`
+	Name     string    `json:"name"`
+	Price    float64   `json:"price"`
+	BedTypes string    `json:"bed_types"`
+}
+
+type BookingDetailDTO struct {
+	ID         uuid.UUID `json:"id"`
+	Name       string    `json:"name"`
+	Email      string    `json:"email"`
+	City       string    `json:"city"`
+	Country    string    `json:"country"`
+	Phone      string    `json:"phone"`
+	CheckIn    time.Time `json:"check_in"`
+	CheckOut   time.Time `json:"check_out"`
+	Quantity   int       `json:"quantity"`
+	Guest      int       `json:"guest"`
+	Status     string    `json:"status"`
+	TotalPrice float64   `json:"total_price"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+
+	User  BookingUserSummaryDTO  `json:"user" gorm:"embedded;embeddedPrefix:user_"`
+	Hotel BookingHotelSummaryDTO `json:"hotel" gorm:"embedded;embeddedPrefix:hotel_"`
+	Room  BookingRoomSummaryDTO  `json:"room" gorm:"embedded;embeddedPrefix:room_"`
+}

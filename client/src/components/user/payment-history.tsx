@@ -30,7 +30,7 @@ const PaymentHistory = () => {
                 </h1>
                 {
                     receipts?.map(receipt => (
-                        <Card className="py-4" key={receipt._id}>
+                        <Card className="py-4 border-2 border-slate-200 shadow-2xs" key={receipt.id}>
                             <CardBody>
                                 <div className="flex justify-between items-center ">
                                     <div className="flex gap-2 items-center">
@@ -49,7 +49,7 @@ const PaymentHistory = () => {
                                     <div className="space-y-2"  >
                                         <p >Booking ID</p>
                                         <p className="font-medium text-violet-600"   >
-                                            {receipt.bookingId.slice(0, 12)}...
+                                            {receipt.booking_id.slice(0, 12)}...
                                         </p>
                                     </div>
 

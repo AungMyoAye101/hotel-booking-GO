@@ -59,6 +59,10 @@ func (s *Service) FindAll(offset, limit int) ([]models.Booking, int64, error) {
 	return s.repo.FindAll(offset, limit)
 }
 
+func (s *Service) FindByUserID(userID uuid.UUID) ([]models.Booking, error) {
+	return s.repo.FindByUserID(userID)
+}
+
 func (s *Service) FindByID(id uuid.UUID) (*BookingDetailDTO, error) {
 	return s.repo.FindByID(id)
 }

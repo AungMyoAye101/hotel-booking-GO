@@ -61,7 +61,7 @@ const BookingInfo = () => {
                                         {booking.hotel?.name}
                                     </h1>
                                     <p className="flex items-center gap-1">
-                                        <MapPin size={18} />  {booking.hotel?.adddress}
+                                        <MapPin size={18} />  {booking.hotel?.address}
                                     </p>
                                     <FiveStars count={booking.hotel?.star} />
                                 </div>

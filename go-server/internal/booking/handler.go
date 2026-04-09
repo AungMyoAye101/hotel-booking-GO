@@ -76,6 +76,20 @@ func (h *Handler) GetBookingByID(c echo.Context) error {
 	return response.SuccessResponse(c, http.StatusOK, "booking fetched", b)
 }
 
+func (h *Handler) GetBookingsByUserID(c echo.Context) error {
+	userID, err := uuid.Parse(c.Param("userId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid user id")
+	}
+
+	bookings, err := h.service.FindByUserID(userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, "bookings fetched", bookings)
+}
+
 func (h *Handler) UpdateBooking(c echo.Context) error {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {

@@ -72,6 +72,20 @@ func (h *Handler) GetPaymentByID(c echo.Context) error {
 	return response.SuccessResponse(c, http.StatusOK, "payment fetched", p)
 }
 
+func (h *Handler) GetPaymentsByUserID(c echo.Context) error {
+	userID, err := uuid.Parse(c.Param("userId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid user id")
+	}
+
+	payments, err := h.service.FindByUserID(userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, "payments fetched", payments)
+}
+
 func (h *Handler) UpdatePayment(c echo.Context) error {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {

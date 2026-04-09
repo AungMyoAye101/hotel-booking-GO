@@ -16,8 +16,8 @@ func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	api := e.Group("/api/v1/bookings")
 	api.POST("", handler.CreateBooking)
 	api.GET("", handler.GetAllBookings)
+	api.GET("/user/:userId", handler.GetBookingsByUserID)
 	api.GET("/:id", handler.GetBookingByID)
 	api.PUT("/:id", handler.UpdateBooking)
 	api.DELETE("/:id", handler.DeleteBooking)
 }
-

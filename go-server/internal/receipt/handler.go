@@ -45,7 +45,7 @@ func (h *Handler) GetReceiptsByUserID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return response.SuccessResponse(c, http.StatusOK, "receipts fetched", map[string]interface{}{"receipts": receipts})
+	return response.SuccessResponse(c, http.StatusOK, "receipts fetched", receipts)
 }
 
 func (h *Handler) GetAllReceipts(c echo.Context) error {

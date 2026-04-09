@@ -33,9 +33,9 @@ export const getBookingById = async (bookingId: string) => {
 }
 
 export const getBookingByUseridService = async (userId: string) => {
-    const { data } = await api.get<APIResponse<{ booking: BookingInfoType[] }>>(`/bookings/user/${userId}`)
+    const { data } = await api.get<APIResponse<BookingInfoType[]>>(`/bookings/user/${userId}`)
 
-    return data.result.booking;
+    return data.result;
 }
 export const cancelBookingService = async (bookingId: string) => {
     const { data } = await api.put<APIResponse<{ booking: BookingInfoType }>>(`/bookings/cancel/${bookingId}`, { bookingId })

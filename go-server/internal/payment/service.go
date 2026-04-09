@@ -68,6 +68,10 @@ func (s *Service) FindAll(offset, limit int) ([]models.Payment, int64, error) {
 	return s.repo.FindAll(offset, limit)
 }
 
+func (s *Service) FindByUserID(userID uuid.UUID) ([]models.Payment, error) {
+	return s.repo.FindByUserID(userID)
+}
+
 func (s *Service) FindByID(id uuid.UUID) (*models.Payment, error) {
 	return s.repo.FindByID(id)
 }

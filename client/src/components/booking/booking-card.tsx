@@ -12,7 +12,7 @@ const BookingCard = () => {
     const userId = useAuth(s => s.user?.id)
     const { data: bookings, isLoading } = useGetetBookingByUserId(userId as string)
 
-
+    console.log(bookings, "dd")
     return (
         <section className='py-10'>
             <h1 className='text-2xl font-semibold my-4'>Your Booking Hostory</h1>
@@ -62,7 +62,7 @@ const BookingCard = () => {
                                         <div className='flex items-center gap-1'>
                                             <MapPin />
                                             <span className='font-semibold text-sm'>
-                                                Address: {booking.hotel?.adddress} , {booking.hotel?.city}
+                                                Address: {booking.hotel?.address} , {booking.hotel?.city}
                                             </span>
 
                                         </div>
@@ -92,12 +92,12 @@ const BookingCard = () => {
                                         </div>
 
                                         {/* room */}
-                                        <div className='flex items-center gap-1'>
+                                        {/* <div className='flex items-center gap-1'>
                                             <BedDouble />
                                             <span className='font-semibold text-sm'>
                                                 Room : {booking.room?.name}
                                             </span>
-                                        </div>
+                                        </div> */}
 
 
                                         {/* Payment */}

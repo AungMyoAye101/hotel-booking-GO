@@ -98,7 +98,7 @@ const BookingPDF = ({ booking }: Prop) => {
                     <Text style={styles.brand}>Booking</Text>
                     <View>
                         <Text>Booking ID</Text>
-                        <Text style={{ fontWeight: "bold", marginTop: 4 }}>{booking._id}</Text>
+                        <Text style={{ fontWeight: "bold", marginTop: 4 }}>{booking.id}</Text>
                     </View>
                 </View>
 
@@ -133,7 +133,7 @@ const BookingPDF = ({ booking }: Prop) => {
                         </Text>
 
                         <Text>
-                            {booking.hotel.adddress}, {booking.hotel.city}
+                            {booking.hotel.address}, {booking.hotel.city}
                         </Text>
 
 
@@ -146,12 +146,12 @@ const BookingPDF = ({ booking }: Prop) => {
 
                     <View style={styles.row}>
                         <Text style={styles.label}>Check-in</Text>
-                        <Text>{new Date(booking.checkIn).toDateString()}</Text>
+                        <Text>{new Date(booking.check_in).toDateString()}</Text>
                     </View>
 
                     <View style={styles.row}>
                         <Text style={styles.label}>Check-out</Text>
-                        <Text>{new Date(booking.checkOut).toDateString()}</Text>
+                        <Text>{new Date(booking.check_out).toDateString()}</Text>
                     </View>
 
                     <View style={styles.row}>
@@ -170,7 +170,7 @@ const BookingPDF = ({ booking }: Prop) => {
                     <View style={styles.row}>
                         <Text>Total Price</Text>
                         <Text style={styles.totalText}>
-                            ${booking.totalPrice.toFixed(2)}
+                            ${booking.total_price.toFixed(2)}
                         </Text>
                     </View>
                 </View>

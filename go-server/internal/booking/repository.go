@@ -88,14 +88,26 @@ func (r *Repository) FindByID(id uuid.UUID) (*BookingDetailDTO, error) {
 		return nil, err
 	}
 
-	// 3. Scan() does not return ErrRecordNotFound if the query succeeds but finds 0 rows.
-	// We check if the ID was successfully populated to confirm the record exists.
 	if b.ID == uuid.Nil {
 		return nil, gorm.ErrRecordNotFound
 	}
 
 	return &b, nil
 }
+
+func (r *Repository) FindByUserID(userID uuid.UUID) ([]models.Booking, error) {
+	var bookings []models.Booking
+	if err := r.db.
+		Preload("User").
+		Preload("Hotel").
+		Where("user_id = ?", userID).
+		Order("created_at desc").
+		Find(&bookings).Error; err != nil {
+		return nil, err
+	}
+	return bookings, nil
+}
+
 func (r *Repository) FindModelByID(id uuid.UUID) (*models.Booking, error) {
 	var b models.Booking
 	if err := r.db.First(&b, "id = ?", id).Error; err != nil {

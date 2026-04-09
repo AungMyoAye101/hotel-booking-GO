@@ -31,6 +31,19 @@ func (r *Repository) FindByID(id uuid.UUID) (*models.Payment, error) {
 	return &p, nil
 }
 
+func (r *Repository) FindByUserID(userID uuid.UUID) ([]models.Payment, error) {
+	var payments []models.Payment
+	if err := r.db.
+		Preload("User").
+		Preload("Booking").
+		Where("user_id = ?", userID).
+		Order("created_at desc").
+		Find(&payments).Error; err != nil {
+		return nil, err
+	}
+	return payments, nil
+}
+
 func (r *Repository) FindAll(offset, limit int) ([]models.Payment, int64, error) {
 	var total int64
 	if err := r.db.Model(&models.Payment{}).Count(&total).Error; err != nil {

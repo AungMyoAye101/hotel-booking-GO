@@ -159,9 +159,9 @@ export type PaymentType = {
 export type ReceiptType = {
     id: string,
     receiptNo: string,
-    userId: string,
-    paymentId: string,
-    bookingId: string,
+    user_id: string,
+    payment_id: string,
+    booking_id: string,
     status: PaymentStatusType,
     paymentMethod: PaymentMethodType,
     amount: number,

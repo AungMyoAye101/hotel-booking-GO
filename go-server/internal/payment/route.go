@@ -24,6 +24,7 @@ func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	api := e.Group("/api/v1/payments")
 	api.POST("", handler.CreatePayment)
 	api.GET("", handler.GetAllPayments)
+	api.GET("/user/:userId", handler.GetPaymentsByUserID)
 	api.GET("/:id", handler.GetPaymentByID)
 	api.PUT("/:id", handler.UpdatePayment)
 	api.DELETE("/:id", handler.DeletePayment)

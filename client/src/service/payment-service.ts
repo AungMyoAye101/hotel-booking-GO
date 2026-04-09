@@ -45,8 +45,10 @@ export const getPaymentById = async (id: string) => {
 
 
 export const getReceiptService = async (userId: string) => {
-    const { data } = await api.get<APIResponse<{ receipts: ReceiptType[] }>>(`/receipt/${userId}`)
+    const { data } = await api.get<APIResponse<ReceiptType[]>>(`/receipt/user/${userId}`)
 
-    return data.result.receipts;
-
+    if (!data.success) {
+        throw new Error("Failed to fetch receipts.")
+    }
+    return data.result;
 }

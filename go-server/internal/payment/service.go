@@ -25,7 +25,7 @@ func NewService(r *Repository, bs *booking.Service, rs *receipt.Service) *Servic
 func (s *Service) Create(dto CreatePaymentDTO) (*models.Payment, error) {
 	status := dto.Status
 	if status == "" {
-		status = "PENDING"
+		status = "PAID"
 	}
 
 	p := &models.Payment{

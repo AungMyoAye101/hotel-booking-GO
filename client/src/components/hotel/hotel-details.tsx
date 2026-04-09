@@ -80,7 +80,7 @@ const HotelDetails = ({ hotel }: Props) => {
                 </div>
                 <HotelReview hotelId={hotel.id} />
             </div>
-            {/* <ReviewCard hotelId={hotel.id} /> */}
+            <ReviewCard hotelId={hotel.id} />
         </section>
     )
 }

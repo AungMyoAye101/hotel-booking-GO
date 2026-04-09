@@ -47,7 +47,7 @@ func (r *Repository) FindAll(offset, limit int) ([]models.Review, int64, error) 
 
 func (r *Repository) FindByHotelID(hotelID uuid.UUID, limit int) ([]models.Review, error) {
 	var reviews []models.Review
-	if err := r.db.Where("hotel_id = ?", hotelID).Order("created_at desc").Limit(limit).Find(&reviews).Error; err != nil {
+	if err := r.db.Preload("User").Where("hotel_id = ?", hotelID).Order("created_at desc").Limit(limit).Find(&reviews).Error; err != nil {
 		return nil, err
 	}
 	return reviews, nil

@@ -5,14 +5,15 @@ import { CreatePaymentType } from "@/validations/payment-schmea";
 
 export const createPayment = async (payment: CreatePaymentType) => {
 
-    const { data } = await api.post<APIResponse<{ payment: CreatePaymentType }>>(
-        '/payment/create', payment
+    const { data } = await api.post<APIResponse<CreatePaymentType>>(
+        '/payments', payment
     )
+    console.log(data)
     if (!data.success) {
         throw new Error("Failed to create payment.")
     }
 
-    return data.result.payment;
+    return data.result;
 }
 
 type confirmPaymentType = {

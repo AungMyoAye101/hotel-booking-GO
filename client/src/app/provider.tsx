@@ -1,9 +1,7 @@
 'use client'
 
 import { HeroUIProvider, ToastProvider } from '@heroui/react'
-import dynamic from 'next/dynamic';
 
-const ThemeProvider = dynamic(() => import("next-themes").then(mod => mod.ThemeProvider), { ssr: false })
 
 import {
     QueryClient,
@@ -22,13 +20,12 @@ const queryClient = new QueryClient({
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <ThemeProvider attribute="class" defaultTheme='light'>
-            <QueryClientProvider client={queryClient}>
-                <HeroUIProvider>
-                    <ToastProvider />
-                    {children}
-                </HeroUIProvider>
-            </QueryClientProvider>
-        </ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+            <HeroUIProvider>
+                <ToastProvider />
+                {children}
+            </HeroUIProvider>
+        </QueryClientProvider>
+
     )
 }

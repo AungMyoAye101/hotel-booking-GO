@@ -2,7 +2,6 @@ package booking
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"github.com/google/uuid"
@@ -94,7 +93,7 @@ func (r *Repository) FindByID(id uuid.UUID) (*BookingDetailDTO, error) {
 	if b.ID == uuid.Nil {
 		return nil, gorm.ErrRecordNotFound
 	}
-	fmt.Println(b)
+
 	return &b, nil
 }
 func (r *Repository) FindModelByID(id uuid.UUID) (*models.Booking, error) {

@@ -127,7 +127,7 @@ export type BookingInfoType = {
     total_price: number,
     guest: number,
     user: {
-        _id: string,
+        id: string,
         name?: string,
     }
 
@@ -170,7 +170,7 @@ export type ReceiptType = {
 
 export type ReviewType = {
     id: string,
-    userId: {
+    user: {
         id: string,
         name: string,
     },

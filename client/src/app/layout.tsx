@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import "./globals.css";
 import { Providers } from "./provider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import AuthInitializer from "@/components/auth/auth-provider";
-
+import "./globals.css";
 
 
 

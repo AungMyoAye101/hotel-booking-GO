@@ -11,9 +11,9 @@ export const useCreatePayment = () => {
         mutationFn: createPayment,
         onSuccess: (data) => {
             qc.invalidateQueries({
-                queryKey: ['booking_by_id', data.bookingId]
+                queryKey: ['booking_by_id', data.booking_id]
             })
-            router.push(`/booking/${data.bookingId}/complete`, { scroll: true })
+            router.push(`/booking/${data.booking_id}/complete`, { scroll: true })
         },
         onError: (error) => {
             console.log(error)

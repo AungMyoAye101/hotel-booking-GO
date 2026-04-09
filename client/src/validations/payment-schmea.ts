@@ -1,11 +1,11 @@
 
 import * as z from "zod";
 export const createPaymentSchema = z.object({
-    bookingId: z.string("Booking id is required."),
-    userId: z.string("user id is required."),
-    paymentMethod: z.enum(['CARD', 'MOBILE_BANKING', 'BANK'], "Invalid payment method."),
+    booking_id: z.string("Booking id is required."),
+    user_id: z.string("user id is required."),
+    payment_method: z.enum(['CARD', 'MOBILE_BANKING', 'BANK'], "Invalid payment method."),
     amount: z.number().positive(),
-    payNow: z.boolean(),
+
 })
 
 export const paymentSchema = z.discriminatedUnion("method", [

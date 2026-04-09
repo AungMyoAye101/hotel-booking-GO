@@ -40,21 +40,17 @@ const PaymentDetailsForm = ({ booking }: Prop) => {
     const [payNow, setPayNow] = useState("paynow")
     const { mutate, isPending } = useCreatePayment()
 
-
-
-
-
     const onSubmit = (e: FormEvent) => {
         e.preventDefault()
         if (!booking) return;
 
-        const payStatus = payNow === "paynow";
+
         const paymentData = {
-            bookingId: booking._id,
-            userId: booking.user._id,
-            paymentMethod: payment,
-            amount: booking.totalPrice,
-            payNow: payStatus
+            booking_id: booking.id,
+            user_id: booking.user.id,
+            payment_method: payment,
+            amount: booking.total_price,
+
         }
 
         const { success, error, data } = createPaymentSchema.safeParse(paymentData);

@@ -12,7 +12,7 @@ export const updateReviewService = async (review: ReviewType) => {
     return data.result;
 }
 export const getReviewsByHotelIdService = async (hotelId: string) => {
-    const { data } = await api.get<APIResponse<ReviewType[]>>('/reviews/' + hotelId, {
+    const { data } = await api.get<APIResponse<ReviewType[]>>('/reviews/hotel/' + hotelId, {
         params: { limit: 4 }
     })
 

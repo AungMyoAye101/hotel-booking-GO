@@ -6,7 +6,6 @@ type Props = {
 }
 const ReviewCard = ({ hotelId }: Props) => {
     const { data: reviews, isLoading, isError, error } = useGetReviewByHotelId(hotelId)
-
     if (isLoading) {
         return <section className='space-y-4'>
 
@@ -62,7 +61,7 @@ const ReviewCard = ({ hotelId }: Props) => {
                                         className='w-8 h-8'
                                     />
                                     <div className='space-y-2 flex-1'>
-                                        <h1 className='text-lg font-semibold'>{value.userId.name}</h1>
+                                        <h1 className='text-lg font-semibold'>{value.user.name}</h1>
                                         <FiveStars count={value.rating} />
                                         <p className='text-sm'>Reviewed : {new Date(value.createdAt).toDateString()}</p>
                                         <p className='text-sm line-clamp-2'>

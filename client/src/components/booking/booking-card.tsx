@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 
 const BookingCard = () => {
-    const userId = useAuth(s => s.user?._id)
+    const userId = useAuth(s => s.user?.id)
     const { data: bookings, isLoading } = useGetetBookingByUserId(userId as string)
 
 
@@ -28,7 +28,7 @@ const BookingCard = () => {
 
                     bookings && bookings.map(booking => (
                         <Card
-                            key={booking._id}
+                            key={booking.id}
                             className=' border border-slate-300' >
 
                             <CardBody>
@@ -71,13 +71,13 @@ const BookingCard = () => {
                                             <div className='flex  items-center gap-1'>
                                                 <Calendar />
                                                 <span className='font-semibold text-sm'>
-                                                    Check in :  {new Date(booking.checkIn).toDateString()}
+                                                    Check in :  {new Date(booking.check_in).toDateString()}
                                                 </span>
                                             </div>
                                             <div className='flex items-center gap-1'>
                                                 <Calendar />
                                                 <span className='font-semibold text-sm'>
-                                                    Check Out : {new Date(booking.checkOut).toDateString()}
+                                                    Check Out : {new Date(booking.check_out).toDateString()}
                                                 </span>
                                             </div>
                                         </div>
@@ -105,7 +105,7 @@ const BookingCard = () => {
                                         <div className='flex items-center gap-1'>
                                             <CreditCard />
                                             <span className='font-semibold '>
-                                                Total : ${booking.totalPrice}
+                                                Total : ${booking.total_price}
                                             </span>
                                         </div>
                                     </div>
@@ -115,7 +115,7 @@ const BookingCard = () => {
                                     <Button
 
                                         as={Link}
-                                        href={`/user/booking/${booking._id}`}
+                                        href={`/user/booking/${booking.id}`}
                                         color='primary'
                                         variant='solid'
                                         radius='sm'

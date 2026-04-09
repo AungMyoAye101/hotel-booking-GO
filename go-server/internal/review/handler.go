@@ -97,6 +97,20 @@ func (h *Handler) UpdateReview(c echo.Context) error {
 	return response.SuccessResponse(c, http.StatusOK, "review updated", r)
 }
 
+func (h *Handler) GetReviewsByHotelID(c echo.Context) error {
+	hotelID, err := uuid.Parse(c.Param("hotelId"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid hotel id")
+	}
+
+	reviews, err := h.service.FindByHotelID(hotelID, 4)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, "reviews fetched", reviews)
+}
+
 func (h *Handler) DeleteReview(c echo.Context) error {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {

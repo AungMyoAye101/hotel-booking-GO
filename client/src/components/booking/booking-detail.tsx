@@ -10,7 +10,7 @@ type Props = {
 
 }
 const BookingDetail = ({ booking }: Props) => {
-    console.log(booking, "ninini")
+
 
     return (
         <section className='w-full md:max-w-sm space-y-4'>
@@ -39,7 +39,7 @@ const BookingDetail = ({ booking }: Props) => {
                         <p className='flex gap-1 text-sm items-center '>
 
                             <MapPin size={16} />
-                            {booking?.hotel?.adddress}
+                            {booking?.hotel?.address}
                             Address
 
                         </p>
@@ -69,7 +69,7 @@ const BookingDetail = ({ booking }: Props) => {
                     <h2 className='head-1'>{booking?.room?.name}</h2>
                     <p className='flex gap-1 items-center '>
                         <BedDouble size={16} />
-                        Bed Type : {booking?.room?.bedTypes}
+                        Bed Type : {booking?.room?.bed_types}
                     </p>
                     <div>
                         <span className='text-warning-500 text-lg font-semibold'>
@@ -90,11 +90,11 @@ const BookingDetail = ({ booking }: Props) => {
                 <CardBody className='pt-2 pb-4 grid grid-cols-2 gap-2'>
                     <div className='bg-slate-200 p-2 rounded-lg flex-col gap-2'>
                         <p>Check In </p>
-                        <p className='font-semibold'>{new Date(booking.checkIn).toDateString()}</p>
+                        <p className='font-semibold'>{new Date(booking.check_in).toDateString()}</p>
                     </div>
                     <div className='bg-slate-200 p-2 rounded-lg flex-col gap-2'>
                         <p>Check Out </p>
-                        <p className='font-semibold'>{new Date(booking.checkOut).toDateString()}</p>
+                        <p className='font-semibold'>{new Date(booking.check_out).toDateString()}</p>
                     </div>
                     <div className='bg-slate-200 p-2 rounded-lg flex-col gap-2'>
                         <p>Quantity </p>
@@ -102,7 +102,7 @@ const BookingDetail = ({ booking }: Props) => {
                     </div>
                     <div className='bg-slate-200 p-2 rounded-lg flex-col gap-2 border border-warning-400'>
                         <p>Price</p>
-                        <p className='font-semibold text-xl text-amber-500'>{booking.totalPrice} $</p>
+                        <p className='font-semibold text-xl text-amber-500'>{booking.total_price} $</p>
                     </div>
 
 

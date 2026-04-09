@@ -1,17 +1,25 @@
 package payment
 
 import (
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/booking"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/receipt"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Service struct {
-	repo *Repository
+	repo           *Repository
+	bookingService *booking.Service
+	receiptService *receipt.Service
 }
 
-func NewService(r *Repository) *Service {
-	return &Service{repo: r}
+func NewService(r *Repository, bs *booking.Service, rs *receipt.Service) *Service {
+	return &Service{
+		repo:           r,
+		bookingService: bs,
+		receiptService: rs,
+	}
 }
 
 func (s *Service) Create(dto CreatePaymentDTO) (*models.Payment, error) {
@@ -30,6 +38,29 @@ func (s *Service) Create(dto CreatePaymentDTO) (*models.Payment, error) {
 	if err := s.repo.Create(p); err != nil {
 		return nil, err
 	}
+
+	// Update booking status to confirmed
+	confirmedStatus := "CONFIRMED"
+	_, err := s.bookingService.Update(dto.BookingID, booking.UpdateBookingDTO{
+		Status: &confirmedStatus,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	// Create receipt
+	_, err = s.receiptService.Create(receipt.CreateReceiptDTO{
+		UserID:        dto.UserID,
+		BookingID:     dto.BookingID,
+		PaymentID:     p.ID,
+		PaymentMethod: dto.PaymentMethod,
+		Status:        status,
+		Amount:        dto.Amount,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return p, nil
 }
 
@@ -73,4 +104,3 @@ func (s *Service) Delete(id uuid.UUID) error {
 	}
 	return nil
 }
-

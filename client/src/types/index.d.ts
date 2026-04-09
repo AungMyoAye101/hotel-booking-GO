@@ -38,7 +38,7 @@ export type RoomType = {
     hotelId: string,
     total_rooms: number,
     photo?: photoType,
-    bedTypes: Bed_Types,
+    bed_types: Bed_Types,
     available_rooms?: number
 
 }
@@ -111,10 +111,10 @@ export type BookingInfoType = {
     city?: string,
     country?: string,
     phone?: string,
-    checkIn: Date,
-    checkOut: Date
+    check_in: Date,
+    check_out: Date
     hotel: {
-        adddress: string,
+        address: string,
         city: string,
         name: string,
         star: number,
@@ -124,7 +124,7 @@ export type BookingInfoType = {
     quantity: number,
     room: Partial<RoomType>,
     status: BookingStatus
-    totalPrice: number,
+    total_price: number,
     guest: number,
     user: {
         _id: string,

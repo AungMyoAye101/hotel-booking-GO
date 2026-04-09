@@ -19,10 +19,7 @@ func NewService(r *Repository) *Service {
 }
 
 func (s *Service) Create(dto CreateBookingDTO) (*models.Booking, error) {
-	status := dto.Status
-	if status == "" {
-		status = "PENDING"
-	}
+	status := "DRAFT"
 
 	b := &models.Booking{
 		UserID:     dto.UserID,
@@ -62,12 +59,12 @@ func (s *Service) FindAll(offset, limit int) ([]models.Booking, int64, error) {
 	return s.repo.FindAll(offset, limit)
 }
 
-func (s *Service) FindByID(id uuid.UUID) (*models.Booking, error) {
+func (s *Service) FindByID(id uuid.UUID) (*BookingDetailDTO, error) {
 	return s.repo.FindByID(id)
 }
 
 func (s *Service) Update(id uuid.UUID, dto UpdateBookingDTO) (*models.Booking, error) {
-	b, err := s.repo.FindByID(id)
+	b, err := s.repo.FindModelByID(id)
 	if err != nil {
 		return nil, err
 	}

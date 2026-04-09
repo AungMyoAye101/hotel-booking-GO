@@ -2,6 +2,7 @@ package booking
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/models"
 	"github.com/google/uuid"
@@ -67,7 +68,36 @@ func (r *Repository) CreateWithAvailability(b *models.Booking) error {
 	})
 }
 
-func (r *Repository) FindByID(id uuid.UUID) (*models.Booking, error) {
+func (r *Repository) FindByID(id uuid.UUID) (*BookingDetailDTO, error) {
+	var b BookingDetailDTO
+
+	// 1. Select bookings.* AND alias the joined columns to match your DTO's embeddedPrefix tags
+	q := r.db.Model(&models.Booking{}).
+		Select(`
+			bookings.*, 
+			users.id AS user_id, users.name AS user_name,
+			hotels.id AS hotel_id, hotels.name AS hotel_name, hotels.address AS hotel_address, hotels.city AS hotel_city, hotels.country AS hotel_country, hotels.rating AS hotel_rating, hotels.star AS hotel_star,
+			rooms.id AS room_id, rooms.name AS room_name, rooms.bed_types AS room_bed_types, rooms.price AS room_price
+		`).
+		Joins("LEFT JOIN users ON users.id = bookings.user_id").
+		Joins("LEFT JOIN hotels ON hotels.id = bookings.hotel_id").
+		Joins("LEFT JOIN rooms ON rooms.id = bookings.room_id").
+		Where("bookings.id = ?", id)
+
+	// 2. Use Scan to map the joined query directly into the DTO
+	if err := q.Scan(&b).Error; err != nil {
+		return nil, err
+	}
+
+	// 3. Scan() does not return ErrRecordNotFound if the query succeeds but finds 0 rows.
+	// We check if the ID was successfully populated to confirm the record exists.
+	if b.ID == uuid.Nil {
+		return nil, gorm.ErrRecordNotFound
+	}
+	fmt.Println(b)
+	return &b, nil
+}
+func (r *Repository) FindModelByID(id uuid.UUID) (*models.Booking, error) {
 	var b models.Booking
 	if err := r.db.First(&b, "id = ?", id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

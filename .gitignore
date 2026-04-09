@@ -1,87 +1,86 @@
-# Binaries for programs and plugins
-go-server/*.exe
-go-server/*.exe~
-go-server/*.dll
-go-server/*.so
-go-server/*.dylib
-go-server/*.gocache
-go-server/tmp
-
-
-# Test binaries, profiling, and coverage reports
-go-server/*.test
-go-server/*.out
-go-server/*.prof
-go-server/*.cgo1.go
-go-server/*.cgo2.c
-go-server/_cgo_defun.c
-go-server/_cgo_gotypes.go
-go-server/_cgo_export.*
-
-# Compiled Object files, Static and Dynamic libs
-go-server/*.o
-go-server/*.a
-
-# Folders
-go-server/_obj
-go-server/_test
-go-server/bin/
-go-server/.cache
-
-# Environment files
-go-server/.env
-
-# Go workspace file
-go-server/go.work
-go-server/go.work.sum
-
-# IDEs, Editors, and OS files (Leave these global so they work everywhere)
-.idea/
-.vscode/
-*.swp
-*.swo
+# =========================
+# Global / OS / Editor
+# =========================
 .DS_Store
+.AppleDouble
+.LSOverride
 Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+*.log
 
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
+# =========================
+# Client (Next.js 16)
+# =========================
 # dependencies
-/client/node_modules
+/client/node_modules/
 /client/.pnp
-/client.pnp.*
-/client.yarn/*
-/!.yarn/patches
-/client!.yarn/plugins
-/client!.yarn/releases
-/client!.yarn/versions
+/client/.pnp.js
 
 # testing
-/client/coverage
+/client/coverage/
 
 # next.js
 /client/.next/
 /client/out/
-
-# production
-/client/build
+/client/build/
 
 # misc
-.DS_Store
-*.pem
+/client/.swc
+/client/.vercel/
+
+# env files (Ignore all except example files)
+/client/.env
+/client/.env.*
+!/client/.env*.example
+!/client/.env*.local.example
 
 # debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# =========================
+# Go Server (Go + Air)
+# =========================
+# Air hot-reload build directory (default is tmp/)
+/go-server/tmp/
 
-# vercel
-.vercel
+# Compiled binaries
+/go-server/bin/
+/go-server/main
+/go-server/*.exe
+/go-server/*.exe~
+/go-server/*.dll
+/go-server/*.so
+/go-server/*.dylib
+/go-server/*.gocache
+/go-server/.gocache/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+
+# Test binary, built with `go test -c`
+/go-server/*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+/go-server/*.out
+
+# Dependency directories (if using vendor mode)
+/go-server/vendor/
+
+# Go workspace file (optional: keep if you want to share workspace config, ignore if purely local)
+# go.work
+# go.work.sum
+
+# env files
+/go-server/.env
+/go-server/.env.*
+!/go-server/.env*.example

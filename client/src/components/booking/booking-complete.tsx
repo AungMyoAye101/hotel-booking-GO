@@ -100,13 +100,13 @@ const Complete = () => {
                                 <div className='flex items-center gap-1'>
                                     <Calendar />
                                     <span className='font-semibold text-sm'>
-                                        Check in :  {new Date(booking.checkIn).toDateString()}
+                                        Check in :  {new Date(booking.check_in).toDateString()}
                                     </span>
                                 </div>
                                 <div className='flex items-center gap-1'>
                                     <Calendar />
                                     <span className='font-semibold text-sm'>
-                                        Check Out : {new Date(booking.checkOut).toDateString()}
+                                        Check Out : {new Date(booking.check_out).toDateString()}
                                     </span>
                                 </div>
                             </div>
@@ -134,7 +134,7 @@ const Complete = () => {
                             <div className='flex items-center gap-1'>
                                 <CreditCard />
                                 <span className='font-semibold '>
-                                    Total : ${booking.totalPrice}
+                                    Total : ${booking.total_price}
                                 </span>
                             </div>
                         </div>
@@ -204,7 +204,7 @@ const Complete = () => {
                                 </p>
                                 <Button
                                     as={Link}
-                                    href={`/user/booking/${booking._id}`}
+                                    href={`/user/booking/${booking.id}`}
                                     variant='solid'
                                     fullWidth
                                     color='primary'

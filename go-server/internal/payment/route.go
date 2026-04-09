@@ -2,6 +2,8 @@ package payment
 
 import (
 	"github.com/AungMyoAye101/hotel-booking-GO/config"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/booking"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/receipt"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -9,9 +11,15 @@ import (
 func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	_ = cfg
 
-	repo := NewRepository(db)
-	service := NewService(repo)
-	handler := NewHandler(service)
+	paymentRepo := NewRepository(db)
+	bookingRepo := booking.NewRepository(db)
+	receiptRepo := receipt.NewRepository(db)
+
+	bookingService := booking.NewService(bookingRepo)
+	receiptService := receipt.NewService(receiptRepo)
+	paymentService := NewService(paymentRepo, bookingService, receiptService)
+
+	handler := NewHandler(paymentService)
 
 	api := e.Group("/api/v1/payments")
 	api.POST("", handler.CreatePayment)
@@ -20,4 +28,3 @@ func Run(e *echo.Echo, db *gorm.DB, cfg *config.Config) {
 	api.PUT("/:id", handler.UpdatePayment)
 	api.DELETE("/:id", handler.DeletePayment)
 }
-

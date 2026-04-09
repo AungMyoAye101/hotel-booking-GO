@@ -74,12 +74,12 @@ const BookingInfo = () => {
                                     </span>
                                     <span >Check In </span>
                                     <span className="font-semibold  text-end">
-                                        {new Date(booking.checkIn).toLocaleDateString()}
+                                        {new Date(booking.check_in).toLocaleDateString()}
                                     </span>
 
                                     <span>Check Out </span>
                                     <span className="font-semibold text-end">
-                                        {new Date(booking.checkOut).toLocaleDateString()}
+                                        {new Date(booking.check_out).toLocaleDateString()}
                                     </span>
                                     <span>Guests </span>
                                     <span className="font-semibold text-end">
@@ -104,7 +104,7 @@ const BookingInfo = () => {
                                     className="flex justify-between gap-4 text-lg  py-2 border-t border-slate-700">
                                     <span >Total price</span>
                                     <span className="font-semibold text-end text-2xl text-amber-600">
-                                        $ {booking.totalPrice}
+                                        $ {booking.total_price}
                                     </span>
                                 </div>
                             </div>
@@ -112,7 +112,7 @@ const BookingInfo = () => {
                     </CardBody>
                 </Card>
                 <div className="flex gap-4">
-                    <CancelBooking bookingId={booking._id} />
+                    <CancelBooking bookingId={booking.id} />
                     <Button
                         as={PDFDownloadLink}
                         document={<BookingPDF booking={booking} />}

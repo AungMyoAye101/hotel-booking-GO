@@ -10,6 +10,7 @@ import (
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/booking"
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/hotel"
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/payment"
+	"github.com/AungMyoAye101/hotel-booking-GO/internal/receipt"
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/review"
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/room"
 	"github.com/AungMyoAye101/hotel-booking-GO/internal/user"
@@ -40,6 +41,7 @@ func main() {
 	booking.Run(app.echo, db, cfg)
 	review.Run(app.echo, db, cfg)
 	payment.Run(app.echo, db, cfg)
+	receipt.Run(app.echo, db, cfg)
 
 	app.Start()
 }

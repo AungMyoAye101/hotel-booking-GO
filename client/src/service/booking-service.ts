@@ -28,7 +28,7 @@ export const updateBooking = async ({ bookingId, booking }: updateBookingParam) 
 
 export const getBookingById = async (bookingId: string) => {
     const { data } = await api.get<APIResponse<BookingInfoType>>(`/bookings/${bookingId}`)
-
+    console.log(data)
     return data.result
 }
 

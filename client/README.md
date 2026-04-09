@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Client App
 
-## Getting Started
+Next.js frontend for the GO Hotel Booking system.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 20+
+- `pnpm` (recommended) or `npm` / `yarn`
+- A running backend API server
+
+## How to Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+cd client
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+pnpm build
+pnpm start
+```
 
-## Learn More
+## Environment Example
 
-To learn more about Next.js, take a look at the following resources:
+This project uses a client-side Axios base URL configured in `src/hooks/axios-api.ts`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file for local overrides if needed:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/server
+```
 
-## Deploy on Vercel
+If you change the API base URL, update `src/hooks/axios-api.ts` accordingly.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Folder Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/` - Next.js application routes and pages
+- `components/` - reusable UI components
+- `hooks/` - custom React hooks and data fetching
+- `lib/` - shared utilities
+- `service/` - API service calls
+- `stores/` - Zustand state management
+- `types/` - TypeScript type definitions
+- `utils/` - helper functions
+- `validations/` - validation schemas
+- `public/` - static assets
+
+## Core Features
+
+- Search and view hotels
+- Room detail and booking flow
+- User authentication and profile management
+- Payment handling
+- Receipt history and PDF download
+- Hotel reviews
+- Responsive UI with Heroui components

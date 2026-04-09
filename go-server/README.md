@@ -8,7 +8,14 @@ Backend API for the GO Hotel Booking application.
 - PostgreSQL
 - `git`
 - `.env` file in `go-server/`
+## How to Run
 
+```bash
+cd go-server
+go mod tidy
+go run ./cmd/server
+go run ./cmd/seed
+```
 ## Makefile Commands
 
 From `go-server/`, use:
@@ -17,17 +24,11 @@ From `go-server/`, use:
 make dev          # Start the server in development mode with air
 make run-server   # Run the server directly
 make build-server # Build the server executable to bin/server
-make test         # Run unit tests
+make run-seed         # to seed data
 make tidy         # Sync module dependencies
 ```
 
-## How to Run
 
-```bash
-cd go-server
-go mod tidy
-make run-server
-```
 
 ### Build and run
 

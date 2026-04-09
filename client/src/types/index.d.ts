@@ -6,6 +6,13 @@ export interface APIResponse<T> {
     message: string,
     result: T
 }
+export interface SearchAPIResponseWithMeta<T> {
+    success: boolean,
+    status: number,
+    message: string,
+    meta: MetaType
+    result: T
+}
 
 export type token = string
 

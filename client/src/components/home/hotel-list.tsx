@@ -93,7 +93,7 @@ export default function HotelCardList() {
                                             className="w-full rounded-none aspect-video h-auto"
                                         />
                                     </div>
-                                    <div className="px-4 py-2 space-y-1">
+                                    <div className="px-4 py-2 flex flex-col gap-2">
                                         <div className="flex justify-between">
                                             <h3 className="font-semibold truncate text-lg">{hotel.name}</h3>
                                             <Chip color='secondary' radius="sm">
@@ -101,7 +101,13 @@ export default function HotelCardList() {
                                             </Chip>
 
                                         </div>
-                                        <p className="line-clamp-1 flex gap-1 items-center"><MapPin className="size-5" />{hotel.address}</p>
+                                        <p className="line-clamp-1 flex gap-1 items-center">
+                                            <MapPin className="size-5" />
+                                            <span className="text-sm">
+
+                                                {hotel.address}
+                                            </span>
+                                        </p>
                                         <div className="flex items-center gap-1">
                                             {
                                                 Array(hotel.star).fill(null).map((_, i) => (
@@ -116,21 +122,19 @@ export default function HotelCardList() {
 
                                         </div>
 
-                                        <div className="  flex items-center justify-between gap-4 ">
 
+                                        <div className="   flex items-center justify-between gap-4 ">
                                             <p>
                                                 <span className="text-black font-bold text-xl">${hotel.price}</span>/night
 
                                             </p>
-
-
                                             <Button
                                                 as={Link}
                                                 href={`/hotel/${hotel.id}`}
                                                 radius="sm"
                                                 variant="solid"
                                                 color="primary"
-                                                className="py-2 mb-2 px-6">
+                                                className="py-2 mb-2 px-4">
                                                 Book now <ArrowRight />
                                             </Button>
                                         </div>

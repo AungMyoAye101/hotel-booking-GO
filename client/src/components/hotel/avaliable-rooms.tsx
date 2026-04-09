@@ -223,7 +223,7 @@ const AvaliableRooms = ({ hotel_id }: Props) => {
 
                                         <div className="flex gap-4 text-sm">
                                             <span className="flex items-center gap-1 capitalize">
-                                                <BedDouble size={16} /> {room.bedTypes} Bed
+                                                <BedDouble size={16} /> {room.bed_types} Bed
                                             </span>
                                             <span className="flex items-center gap-1">
                                                 <UsersRound size={16} /> {room.maxPeople} guests

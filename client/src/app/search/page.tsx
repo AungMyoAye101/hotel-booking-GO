@@ -4,7 +4,7 @@ import HotelCardLoading from "@/components/loading/hotel-loading"
 import Meta from "@/components/pagination"
 import Empty from "@/components/ui/empty"
 import { serverFetch } from "@/hooks/api"
-import { APIResponse, MetaType } from "@/types"
+import { SearchAPIResponseWithMeta } from "@/types"
 import { hotelType } from "@/types/hotel-types"
 import { Suspense } from "react"
 
@@ -20,10 +20,7 @@ type HotelQueryProps = {
 }
 
 
-type HotelWithMeta = {
-    hotels: hotelType[],
-    meta: MetaType
-}
+
 
 const page = async ({ searchParams }: { searchParams: Promise<HotelQueryProps> }) => {
     const params = await searchParams;
@@ -48,16 +45,15 @@ const page = async ({ searchParams }: { searchParams: Promise<HotelQueryProps> }
         })
     }
 
-    const data = await serverFetch<APIResponse<HotelWithMeta>>(`/hotel?${urlParams.toString()}`);
-
-    if (data.result.hotels.length === 0) {
+    const data = await serverFetch<SearchAPIResponseWithMeta<hotelType[]>>(`/hotels?${urlParams.toString()}`);
+    if (data.result.length === 0) {
         return <Empty />;
     }
 
     return (
         <Suspense fallback={<HotelCardLoading />}>
-            <HotelCard hotels={data.result.hotels} />
-            <Meta meta={data.result.meta} />
+            <HotelCard hotels={data.result} />
+            <Meta meta={data.meta} />
         </Suspense>
     )
 }

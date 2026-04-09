@@ -17,7 +17,7 @@ const HotelCard = ({ hotels }: Props) => {
             {
                 hotels.map(hotel => (
 
-                    <Card key={hotel._id} >
+                    <Card key={hotel.id} >
                         <CardBody >
 
                             <div className='p-2 flex flex-col sm:flex-row gap-4'>
@@ -82,7 +82,7 @@ const HotelCard = ({ hotels }: Props) => {
 
                                         <Button
                                             as={Link}
-                                            href={`/hotel/${hotel._id}`}
+                                            href={`/hotel/${hotel.id}`}
 
                                             radius="sm"
                                             variant="solid"

@@ -4,29 +4,58 @@ import { useAuth } from '@/stores/auth-store'
 import { Button, Card, CardBody, Chip, Skeleton } from '@heroui/react';
 import Image from 'next/image';
 import FiveStars from '../star';
-import { BedDouble, Calendar, CreditCard, Hotel, MapPin, UserRound } from 'lucide-react';
+import { BedDouble, Calendar, CreditCard, Hotel, Info, MapPin, UserRound } from 'lucide-react';
 import Link from 'next/link';
+import Empty from '../ui/empty';
 
 
 const BookingCard = () => {
     const userId = useAuth(s => s.user?.id)
     const { data: bookings, isLoading } = useGetetBookingByUserId(userId as string)
 
-    console.log(bookings, "dd")
+    if (isLoading) {
+        return <section className="space-y-6">
+            {
+                Array(6).fill(null).map((_, i) => (
+                    <Skeleton key={i} className='w-full h-48' />
+                ))
+            }
+        </section>
+    }
+
+    if (!bookings || bookings.length === 0) {
+        return <section className='min-h-screen py-12'>
+            <Card className='max-w-sm mx-auto'>
+                <CardBody>
+                    <div className='flex flex-col items-center gap-2 justify-center p-4 '>
+                        <Info size={60} className='text-blue-400' />
+                        <h2 className='text-2xl font-bold  '>No Booking </h2>
+                        <p className='text-center text-slate-600'>
+                            You have not made any bookings yet. Explore our hotels and start planning your next trip!
+                        </p>
+                        <Button
+                            as={Link}
+                            href='/'
+                            color='primary'
+                            variant='solid'
+                            radius='sm'
+                            className='mt-4'
+                        >
+                            Explore Hotels
+                        </Button>
+                    </div>
+                </CardBody>
+            </Card>
+        </section>
+    }
     return (
         <section className='py-10'>
             <h1 className='text-2xl font-semibold my-4'>Your Booking Hostory</h1>
             <div className='space-y-6'>
 
-                {
-                    isLoading && Array(6).fill(null).map((_, i) => (
-                        <Skeleton key={i} className='w-full h-48' />
-                    ))
-                }
-                {
 
-
-                    bookings && bookings.map(booking => (
+                {
+                    bookings.map(booking => (
                         <Card
                             key={booking.id}
                             className=' border border-slate-300' >

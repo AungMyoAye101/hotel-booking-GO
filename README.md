@@ -60,7 +60,7 @@ pnpm dev
 ```
 
 ## Future Plan
--Add background image upload
+- Add background image upload
 - Add automated tests for frontend and backend
 - Add CI/CD and deployment pipeline
 

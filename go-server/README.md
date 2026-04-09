@@ -6,22 +6,126 @@ Backend API for the GO Hotel Booking application.
 
 - Go 1.26+
 - PostgreSQL
-- `GIT`
+- `git`
 - `.env` file in `go-server/`
+
+## Makefile Commands
+
+From `go-server/`, use:
+
+```bash
+make dev          # Start the server in development mode with air
+make run-server   # Run the server directly
+make build-server # Build the server executable to bin/server
+make test         # Run unit tests
+make tidy         # Sync module dependencies
+```
 
 ## How to Run
 
 ```bash
 cd go-server
 go mod tidy
-go run ./cmd/server
+make run-server
 ```
 
 ### Build and run
 
 ```bash
-go build -o hotel-booking ./cmd/server
-env $(cat .env) ./hotel-booking
+cd go-server
+go build -o bin/server ./cmd/server
+env $(cat .env) ./bin/server
+```
+
+## API Endpoints Examples
+
+Assumes the server is running on `http://127.0.0.1:8000`.
+
+### Auth
+
+- Register user
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/auth/register \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Jane Doe","email":"jane@example.com","password":"secret123"}'
+```
+
+- Login user
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"jane@example.com","password":"secret123"}'
+```
+
+### Hotels
+
+- Get hotels
+
+```bash
+curl http://127.0.0.1:8000/api/v1/hotels
+```
+
+- Get hotel by ID
+
+```bash
+curl http://127.0.0.1:8000/api/v1/hotels/{hotelId}
+```
+
+### Rooms
+
+- Get available rooms by hotel ID
+
+```bash
+curl http://127.0.0.1:8000/api/v1/hotels/{hotelId}/rooms/available
+```
+
+### Booking
+
+- Create booking
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/bookings \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>' \
+  -d '{"hotel_id":"{hotelId}","room_id":"{roomId}","user_id":"{userId}","check_in":"2026-05-01","check_out":"2026-05-05","guests":2}'
+```
+
+- Update booking
+
+```bash
+curl -X PUT http://127.0.0.1:8000/api/v1/bookings/{bookingId} \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>' \
+  -d '{"check_in":"2026-05-02","check_out":"2026-05-06"}'
+```
+
+### Payment
+
+- Create payment
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/payments \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>' \
+  -d '{"booking_id":"{bookingId}","amount":250.00,"payment_method":"credit_card"}'
+```
+
+- Get payment by ID
+
+```bash
+curl http://127.0.0.1:8000/api/v1/payments/{paymentId} \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>'
+```
+
+### Receipt
+
+- Get receipt by user ID
+
+```bash
+curl http://127.0.0.1:8000/api/v1/receipts/user/{userId} \
+  -H 'Authorization: Bearer <ACCESS_TOKEN>'
 ```
 
 ## Environment Example

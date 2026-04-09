@@ -39,8 +39,8 @@ $RECYCLE.BIN/
 /client/.vercel/
 
 # env files (Ignore all except example files)
-/client/.env
-/client/.env.*
+!/client/.env
+!/client/.env.*
 !/client/.env*.example
 !/client/.env*.local.example
 

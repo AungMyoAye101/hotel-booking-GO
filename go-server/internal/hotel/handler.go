@@ -2,6 +2,8 @@ package hotel
 
 import (
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/pagination"
 	"github.com/AungMyoAye101/hotel-booking-GO/pkg/response"
@@ -41,8 +43,13 @@ func (h *Handler) GetAllHotels(c echo.Context) error {
 		return err
 	}
 
+	filter, err := parseHotelFilter(c)
+	if err != nil {
+		return err
+	}
+
 	offset := (params.Page - 1) * params.Limit
-	hotels, total, err := h.service.FindAll(offset, params.Limit)
+	hotels, total, err := h.service.FindAll(offset, params.Limit, filter)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
@@ -54,6 +61,57 @@ func (h *Handler) GetAllHotels(c echo.Context) error {
 		hotels,
 		pagination.NewMeta(params, total),
 	)
+}
+
+func parseHotelFilter(c echo.Context) (HotelFilter, error) {
+	filter := HotelFilter{
+		Destination: strings.TrimSpace(c.QueryParam("destination")),
+		RatingOrder: strings.ToLower(strings.TrimSpace(c.QueryParam("rating_order"))),
+		PriceOrder:  strings.ToLower(strings.TrimSpace(c.QueryParam("price_order"))),
+	}
+
+	if filter.RatingOrder != "" && filter.RatingOrder != "asc" && filter.RatingOrder != "desc" {
+		return filter, echo.NewHTTPError(http.StatusBadRequest, "invalid rating_order; use asc or desc")
+	}
+	if filter.PriceOrder != "" && filter.PriceOrder != "asc" && filter.PriceOrder != "desc" {
+		return filter, echo.NewHTTPError(http.StatusBadRequest, "invalid price_order; use asc or desc")
+	}
+
+	if minPriceRaw := strings.TrimSpace(c.QueryParam("min_price")); minPriceRaw != "" {
+		minPrice, err := strconv.ParseFloat(minPriceRaw, 64)
+		if err != nil || minPrice < 0 {
+			return filter, echo.NewHTTPError(http.StatusBadRequest, "invalid min_price")
+		}
+		filter.MinPrice = minPrice
+	}
+
+	if maxPriceRaw := strings.TrimSpace(c.QueryParam("max_price")); maxPriceRaw != "" {
+		maxPrice, err := strconv.ParseFloat(maxPriceRaw, 64)
+		if err != nil || maxPrice < 0 {
+			return filter, echo.NewHTTPError(http.StatusBadRequest, "invalid max_price")
+		}
+		filter.MaxPrice = maxPrice
+	}
+
+	if filter.MinPrice > 0 && filter.MaxPrice > 0 && filter.MaxPrice < filter.MinPrice {
+		return filter, echo.NewHTTPError(http.StatusBadRequest, "max_price must be greater than or equal to min_price")
+	}
+
+	if starsRaw := strings.TrimSpace(c.QueryParam("stars")); starsRaw != "" {
+		for _, raw := range strings.Split(starsRaw, ",") {
+			raw = strings.TrimSpace(raw)
+			if raw == "" {
+				continue
+			}
+			star, err := strconv.Atoi(raw)
+			if err != nil || star < 1 || star > 5 {
+				return filter, echo.NewHTTPError(http.StatusBadRequest, "invalid stars list; values must be 1-5")
+			}
+			filter.Stars = append(filter.Stars, star)
+		}
+	}
+
+	return filter, nil
 }
 
 func (h *Handler) GetHotelByID(c echo.Context) error {

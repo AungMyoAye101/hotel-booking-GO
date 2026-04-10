@@ -11,16 +11,16 @@ const InputCon = () => {
 
     const [destination, setDestination] = useState(searchParam.get('destination') || '')
     const [guest, setGuest] = useState(searchParam.get('guest') || '')
-    const [checkIn, setCheckIn] = useState<any>(searchParam.get('checkIn') ? new Date(searchParam.get('checkIn')!) : null)
-    const [checkOut, setCheckOut] = useState<any>(searchParam.get('checkOut') ? new Date(searchParam.get('checkOut')!) : null)
+    const [checkIn, setCheckIn] = useState<any>(searchParam.get('check-in') ? new Date(searchParam.get('check-in')!) : null)
+    const [checkOut, setCheckOut] = useState<any>(searchParam.get('check_out') ? new Date(searchParam.get('check_out')!) : null)
 
     const handlesearch = () => {
         const params = new URLSearchParams(searchParam);
         params.set('destination', destination);
         const checkInStr = checkIn ? (checkIn instanceof Date ? checkIn.toISOString() : String(checkIn)) : '';
         const checkOutStr = checkOut ? (checkOut instanceof Date ? checkOut.toISOString() : String(checkOut)) : '';
-        params.set('checkIn', checkInStr);
-        params.set('checkOut', checkOutStr);
+        params.set('check_in', checkInStr);
+        params.set('check_out', checkOutStr);
         params.set('guest', guest);
         router.push(`/search?${params.toString()}`);
     }

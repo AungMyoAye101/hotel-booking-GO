@@ -34,8 +34,8 @@ func (s *Service) Create(dto CreateHotelDTO) (*models.Hotel, error) {
 	return h, nil
 }
 
-func (s *Service) FindAll(offset, limit int) ([]models.Hotel, int64, error) {
-	return s.repo.FindAll(offset, limit)
+func (s *Service) FindAll(offset, limit int, filter HotelFilter) ([]models.Hotel, int64, error) {
+	return s.repo.FindAll(offset, limit, filter)
 }
 
 func (s *Service) FindByID(id uuid.UUID) (*models.Hotel, error) {

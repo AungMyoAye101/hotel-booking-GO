@@ -11,10 +11,10 @@ import { Suspense } from "react"
 
 type HotelQueryProps = {
     destination?: string,
-    minPrice?: number,
-    maxPrice?: number,
-    priceOrder?: 'asc' | 'desc'
-    ratingOrder?: 'asc' | 'desc',
+    min_price?: number,
+    max_price?: number,
+    price_order?: 'asc' | 'desc'
+    rating_order?: 'asc' | 'desc',
     star?: string | string[]
     page: number
 }
@@ -33,10 +33,10 @@ const page = async ({ searchParams }: { searchParams: Promise<HotelQueryProps> }
         urlParams.delete('destination');
     }
 
-    urlParams.set('minPrice', String(params.minPrice ?? 100),);
-    urlParams.set('maxPrice', String((params.maxPrice ?? 500)));
-    urlParams.set('priceOrder', params.priceOrder ?? "asc");
-    urlParams.set('ratingOrder', params.ratingOrder ?? "asc");
+    urlParams.set('min_price', String(params.min_price ?? 100),);
+    urlParams.set('max_price', String((params.max_price ?? 500)));
+    urlParams.set('price_order', params.price_order ?? "asc");
+    urlParams.set('rating_order', params.rating_order ?? "asc");
     urlParams.set('page', params.page ? params.page.toString() : "1");
     urlParams.delete('star');
     if (Array.isArray(params.star)) {

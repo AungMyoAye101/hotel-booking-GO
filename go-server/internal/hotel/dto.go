@@ -30,3 +30,12 @@ type UpdateHotelDTO struct {
 	Amenities   *[]string  `json:"amenities"`
 }
 
+type HotelFilter struct {
+	Destination string  `json:"destination"`
+	MinPrice    float64 `json:"min_price"`
+	MaxPrice    float64 `json:"max_price"`
+	RatingOrder string  `json:"rating_order"`
+	PriceOrder  string  `json:"price_order"`
+	Stars       []int   `json:"stars"`
+}
+

@@ -110,8 +110,8 @@ const SideBar = () => {
                         <Slider
                             className='w-60'
                             defaultValue={[
-                                Number(searchParams.get("minPrice")) ?? 100,
-                                Number(searchParams.get("maxPrice")) ?? 300]}
+                                Number(searchParams.get("min_price")) ?? 100,
+                                Number(searchParams.get("max_price")) ?? 300]}
                             formatOptions={{ style: "currency", currency: "USD" }}
                             label="Price Range"
                             maxValue={1000}
@@ -119,11 +119,11 @@ const SideBar = () => {
                             onChangeEnd={(value) => {
                                 if (Array.isArray(value)) {
                                     const [min, max] = value;
-                                    updateParams("minPrice", String(min));
-                                    updateParams("maxPrice", String(max));
+                                    updateParams("min_price", String(min));
+                                    updateParams("max_price", String(max));
                                 } else {
-                                    updateParams("minPrice", String(value));
-                                    updateParams("maxPrice", String(value));
+                                    updateParams("min_price", String(value));
+                                    updateParams("max_price", String(value));
                                 }
                             }}
                             step={10}
@@ -134,8 +134,8 @@ const SideBar = () => {
 
                     {/* sort by price order */}
                     <RadioGroup
-                        defaultValue={searchParams.get('priceOrder') ?? 'asc'}
-                        onChange={(e) => updateParams('priceOrder', e.target.value)
+                        defaultValue={searchParams.get('price_order') ?? 'asc'}
+                        onChange={(e) => updateParams('price_order', e.target.value)
 
                         }
                         label='Sort by price order'
@@ -198,8 +198,8 @@ const SideBar = () => {
 
 
                     <RadioGroup
-                        defaultValue={searchParams.get('ratingOrder') ?? "asc"}
-                        onChange={(e) => updateParams("ratingOrder", e.target.value)}
+                        defaultValue={searchParams.get('rating_order') ?? "asc"}
+                        onChange={(e) => updateParams("rating_order", e.target.value)}
                         label='Sort by rating order'
                     >
                         {
